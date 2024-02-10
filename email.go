@@ -7,13 +7,13 @@ import (
 	"net/http"
 )
 
-func GetEmail(client *PC_Client, app_id, secret_token, id string) EmailRoot {
+func GetEmail(client *PC_Client, appID, secretToken, emailID string) EmailRoot {
 	//Fetch the data
-	endpoint := HostURL + "people/v2/emails/" + id
+	endpoint := HostURL + "people/v2/emails/" + emailID
 	request, err := http.NewRequest("GET", endpoint, nil)
 
 	// Make the request
-	body, err := client.doRequest(request, secret_token, app_id)
+	body, err := client.doRequest(request, secretToken, appID)
 	if err != nil {
 		fmt.Println("Failure during doRequest: ")
 		fmt.Print(err)
@@ -29,7 +29,7 @@ func GetEmail(client *PC_Client, app_id, secret_token, id string) EmailRoot {
 
 }
 
-func CreateEmail(client *PC_Client, app_id, secret_token, peopleID string, responseData *EmailRootNoRelationship) []byte {
+func CreateEmail(client *PC_Client, appID, secretToken, peopleID string, responseData *EmailRootNoRelationship) []byte {
 	endpoint := HostURL + "people/v2/people/" + peopleID + "/emails"
 
 	// Convert struct to JSON
@@ -48,7 +48,7 @@ func CreateEmail(client *PC_Client, app_id, secret_token, peopleID string, respo
 	request.Header.Set("Content-Type", "application/json")
 
 	// Make the request
-	body, err := client.doRequest(request, secret_token, app_id)
+	body, err := client.doRequest(request, secretToken, appID)
 	if err != nil {
 		fmt.Println("Failure during doRequest: ")
 		fmt.Print(err)
@@ -57,8 +57,8 @@ func CreateEmail(client *PC_Client, app_id, secret_token, peopleID string, respo
 	return body
 }
 
-func DeleteEmail(client *PC_Client, app_id, secret_token, id string) {
-	endpoint := HostURL + "people/v2/emails/" + id
+func DeleteEmail(client *PC_Client, appID, secretToken, emailID string) {
+	endpoint := HostURL + "people/v2/emails/" + emailID
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("DELETE", endpoint, nil)
@@ -68,7 +68,7 @@ func DeleteEmail(client *PC_Client, app_id, secret_token, id string) {
 	}
 
 	// Make the request
-	body, err := client.doRequest(request, secret_token, app_id)
+	body, err := client.doRequest(request, secretToken, appID)
 	if err != nil {
 		fmt.Println("Failure during doRequest: ")
 		fmt.Print(err)
@@ -78,8 +78,8 @@ func DeleteEmail(client *PC_Client, app_id, secret_token, id string) {
 
 }
 
-func UpdateEmail(client *PC_Client, app_id, secret_token, id string, responseData *EmailRoot) []byte {
-	endpoint := HostURL + "people/v2/emails/" + id
+func UpdateEmail(client *PC_Client, appID, secretToken, emailID string, responseData *EmailRoot) []byte {
+	endpoint := HostURL + "people/v2/emails/" + emailID
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
@@ -97,7 +97,7 @@ func UpdateEmail(client *PC_Client, app_id, secret_token, id string, responseDat
 	request.Header.Set("Content-Type", "application/json")
 
 	// Make the request
-	body, err := client.doRequest(request, secret_token, app_id)
+	body, err := client.doRequest(request, secretToken, appID)
 	if err != nil {
 		fmt.Println("Failure during doRequest: ")
 		fmt.Print(err)

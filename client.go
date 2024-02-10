@@ -15,19 +15,19 @@ type PC_Client struct {
 	Endpoint string
 }
 
-func NewPCClient(id, token, endpoint string) *PC_Client {
+func NewPCClient(appID, secretToken, endpoint string) *PC_Client {
 	fmt.Println("Returning a new PCClient")
 	return &PC_Client{
 		Client:   &http.Client{},
-		AppID:    id,
-		Token:    token,
+		AppID:    appID,
+		Token:    secretToken,
 		Endpoint: endpoint,
 	}
 }
 
-func (c *PC_Client) doRequest(req *http.Request, token, id string) ([]byte, error) {
+func (c *PC_Client) doRequest(req *http.Request, secretToken, appID string) ([]byte, error) {
 
-	req.SetBasicAuth(id, token)
+	req.SetBasicAuth(appID, secretToken)
 
 	response, err := c.Client.Do(req)
 	if err != nil {
