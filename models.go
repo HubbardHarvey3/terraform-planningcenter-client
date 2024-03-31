@@ -8,8 +8,8 @@ type PeopleRoot struct {
 }
 
 type Person struct {
-	Type       string     `json:"type"`
-	ID         string     `json:"id"`
+	Type       string           `json:"type"`
+	ID         string           `json:"id"`
 	Attributes PersonAttributes `json:"attributes"`
 }
 
