@@ -2,8 +2,8 @@ package client
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -11,7 +11,7 @@ var responseJSON = `{
 	"data": {
 		"type": "person",
 		"attributes": {
-			"accounting_administrator": true,
+			"accounting_administrator": false,
 			"anniversary": null,
 			"birthdate": "1990-01-01",
 			"first_name": "UnitTest",
@@ -48,13 +48,12 @@ func TestCreatePeople(t *testing.T) {
 	//Convert json into PeopleRoot
 	json.Unmarshal([]byte(responseJSON), &data)
 
-	fmt.Printf("%+v :::: %v", data, URL)
 	client := NewPCClient(appId, secretToken, URL)
-	fmt.Printf("%v", client)
 
-	person := CreatePeople(client, appId, secretToken, &data)
-
-	fmt.Printf("Returned []byte ::: %v", string(person))
+	person, err := CreatePeople(client, appId, secretToken, &data)
+	if err != nil {
+		t.Errorf("Error during CreatePeople :: %v\n", err)
+	}
 
 	var response PeopleRoot
 	json.Unmarshal(person, &response)
@@ -77,7 +76,10 @@ func TestGetPeople(t *testing.T) {
 	// Initialize your PC_Client with the mock server URL
 	client := NewPCClient(appId, secretToken, URL)
 
-	person := GetPeople(client, appId, secretToken, personId)
+	person, err := GetPeople(client, appId, secretToken, personId)
+	if err != nil {
+		t.Errorf("GetPeople failed with an error ::: %v\n", err)
+	}
 
 	if person.Data.Attributes.FirstName != "UnitTest" {
 		t.Errorf("Expected person.Data.ATtributes.FirstName to be UnitTest, instead got %v\n", person.Data.Attributes.FirstName)
@@ -101,4 +103,8 @@ func TestDeletePeople(t *testing.T) {
 
 	DeletePeople(client, appId, secretToken, personId)
 
+	_, err := GetPeople(client, appId, secretToken, personId)
+	if !strings.Contains(err.Error(), "404") {
+		t.Errorf("GetPeople should be throwing a 404 after the person was deleted")
+	}
 }
