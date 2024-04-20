@@ -7,16 +7,16 @@ import (
 	"net/http"
 )
 
-func GetPeople(client *PC_Client, app_id, secret_token, id string) (PeopleRoot, error) {
+func GetPeople(client *PC_Client, appId, secretToken, peopleId string) (PeopleRoot, error) {
 	//Fetch the data
-	endpoint := HostURL + "people/v2/people/" + id
+	endpoint := HostURL + "people/v2/people/" + peopleId
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		fmt.Println("Error creating request:", err)
 	}
 
 	//Send the request
-	body, err := client.doRequest(request, secret_token, app_id)
+	body, err := client.doRequest(request, secretToken, appId)
 	if err != nil {
 		return PeopleRoot{}, err
 	}
@@ -32,7 +32,7 @@ func GetPeople(client *PC_Client, app_id, secret_token, id string) (PeopleRoot, 
 
 }
 
-func CreatePeople(client *PC_Client, app_id, secret_token string, responseData *PeopleRoot) ([]byte, error) {
+func CreatePeople(client *PC_Client, appId, secretToken string, responseData *PeopleRoot) ([]byte, error) {
 	endpoint := HostURL + "people/v2/people/"
 
 	// Convert struct to JSON
@@ -51,7 +51,7 @@ func CreatePeople(client *PC_Client, app_id, secret_token string, responseData *
 	request.Header.Set("Content-Type", "application/json")
 
 	// Make the request
-	body, err := client.doRequest(request, secret_token, app_id)
+	body, err := client.doRequest(request, secretToken, appId)
 	if err != nil {
 		return nil, err
 	}
@@ -59,8 +59,8 @@ func CreatePeople(client *PC_Client, app_id, secret_token string, responseData *
 	return body, nil
 }
 
-func DeletePeople(client *PC_Client, app_id, secret_token, id string) error {
-	endpoint := HostURL + "people/v2/people/" + id
+func DeletePeople(client *PC_Client, appId, secretToken, peopleId string) error {
+	endpoint := HostURL + "people/v2/people/" + peopleId
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("DELETE", endpoint, nil)
@@ -68,7 +68,7 @@ func DeletePeople(client *PC_Client, app_id, secret_token, id string) error {
 		return fmt.Errorf("Error creating request ::: %v", err)
 	}
 
-	_, err = client.doRequest(request, secret_token, app_id)
+	_, err = client.doRequest(request, secretToken, appId)
 	if err != nil {
 		return err
 	}
@@ -76,8 +76,8 @@ func DeletePeople(client *PC_Client, app_id, secret_token, id string) error {
 	return nil
 }
 
-func UpdatePeople(client *PC_Client, app_id, secret_token, id string, responseData *PeopleRoot) ([]byte, error) {
-	endpoint := HostURL + "people/v2/people/" + id
+func UpdatePeople(client *PC_Client, appId, secretToken, peopleId string, responseData *PeopleRoot) ([]byte, error) {
+	endpoint := HostURL + "people/v2/people/" + peopleId
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
@@ -95,7 +95,7 @@ func UpdatePeople(client *PC_Client, app_id, secret_token, id string, responseDa
 	request.Header.Set("Content-Type", "application/json")
 
 	// Make the request
-	body, err := client.doRequest(request, secret_token, id)
+	body, err := client.doRequest(request, secretToken, peopleId)
 	if err != nil {
 		return nil, err
 	}
