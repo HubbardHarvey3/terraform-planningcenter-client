@@ -16,16 +16,20 @@ If you only require certain packages you can import those specific packages with
 
 Currently, the client uses 2 environment variables to authenticate your account with Planning Center.
 
-To setup authentication, you will need your Planning Center [Personal Access Tokens] (https://api.planningcenteronline.com/oauth/applications)
+To setup authentication, you will need your Planning Center [Personal Access Tokens](https://api.planningcenteronline.com/oauth/applications)
 
 After creating your "Personal Access Token," you can export them as environment variables
 
 On Linux
+
 `export PC_APP_ID=<Your Application ID> `
+
 `export PC_SECRET_TOKEN=<Your Secret>`
 
 On Windows (Powershell)
+
 `$env:PC_APP_ID=<Your Application ID> `
+
 `$env:PC_SECRET_TOKEN=<Your Secret>`
 
 ## License
