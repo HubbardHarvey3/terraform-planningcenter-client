@@ -1,10 +1,12 @@
-package client
+package people
 
 import (
 	"encoding/json"
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
 )
 
 var responseJSON = `{
@@ -36,7 +38,7 @@ var appId = os.Getenv("PC_APP_ID")
 var secretToken = os.Getenv("PC_SECRET_TOKEN")
 
 func TestCreatePeople(t *testing.T) {
-	var data PeopleRoot
+	var data core.PeopleRoot
 
 	if appId == "" {
 		t.Errorf("Need Env Vars PC_APP_ID Set")
@@ -48,14 +50,14 @@ func TestCreatePeople(t *testing.T) {
 	//Convert json into PeopleRoot
 	json.Unmarshal([]byte(responseJSON), &data)
 
-	client := NewPCClient(appId, secretToken, URL)
+	client := core.NewPCClient(appId, secretToken)
 
 	person, err := CreatePeople(client, appId, secretToken, &data)
 	if err != nil {
 		t.Errorf("Error during CreatePeople :: %v\n", err)
 	}
 
-	var response PeopleRoot
+	var response core.PeopleRoot
 	json.Unmarshal(person, &response)
 
 	personId = response.Data.ID
@@ -74,7 +76,7 @@ func TestGetPeople(t *testing.T) {
 		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
 	}
 	// Initialize your PC_Client with the mock server URL
-	client := NewPCClient(appId, secretToken, URL)
+	client := core.NewPCClient(appId, secretToken)
 
 	person, err := GetPeople(client, appId, secretToken, personId)
 	if err != nil {
@@ -99,7 +101,7 @@ func TestDeletePeople(t *testing.T) {
 		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
 	}
 
-	client := NewPCClient(appId, secretToken, URL)
+	client := core.NewPCClient(appId, secretToken)
 
 	DeletePeople(client, appId, secretToken, personId)
 

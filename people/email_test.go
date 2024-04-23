@@ -1,10 +1,12 @@
-package client
+package people
 
 import (
 	"encoding/json"
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
 )
 
 var responsePerson = `{
@@ -48,8 +50,8 @@ var appIdEmail = os.Getenv("PC_APP_ID")
 var secretTokenEmail = os.Getenv("PC_SECRET_TOKEN")
 
 func TestCreateEmail(t *testing.T) {
-	var dataPerson PeopleRoot
-	var dataEmail EmailRootNoRelationship
+	var dataPerson core.PeopleRoot
+	var dataEmail core.EmailRootNoRelationship
 
 	if appIdEmail == "" {
 		t.Errorf("Need Env Vars PC_APP_ID Set")
@@ -58,20 +60,20 @@ func TestCreateEmail(t *testing.T) {
 		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
 	}
 
-	//Convert json into PeopleRoot
+	//Convert json into core.PeopleRoot
 	err := json.Unmarshal([]byte(responseJSON), &dataPerson)
 	if err != nil {
 		t.Error(err)
 	}
 
-	client := NewPCClient(appIdEmail, secretTokenEmail, URL)
+	client := core.NewPCClient(appIdEmail, secretTokenEmail)
 
 	person, err := CreatePeople(client, appIdEmail, secretTokenEmail, &dataPerson)
 	if err != nil {
 		t.Errorf("Error during CreatePeople :: %v\n", err)
 	}
 
-	var responsePerson PeopleRoot
+	var responsePerson core.PeopleRoot
 	json.Unmarshal(person, &responsePerson)
 
 	personId = responsePerson.Data.ID
@@ -83,7 +85,7 @@ func TestCreateEmail(t *testing.T) {
 
 	emailBytes, err := CreateEmail(client, appIdEmail, secretTokenEmail, personId, &dataEmail)
 
-	var email EmailRootNoRelationship
+	var email core.EmailRootNoRelationship
 	json.Unmarshal(emailBytes, &email)
 	emailId = email.Data.ID
 
@@ -94,7 +96,7 @@ func TestCreateEmail(t *testing.T) {
 }
 
 func TestGetEmail(t *testing.T) {
-	var email EmailRoot
+	var email core.EmailRoot
 
 	if appIdEmail == "" {
 		t.Errorf("Need Env Vars PC_APP_ID Set")
@@ -103,7 +105,7 @@ func TestGetEmail(t *testing.T) {
 		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
 	}
 	// Initialize your PC_Client with the mock server URL
-	client := NewPCClient(appIdEmail, secretTokenEmail, URL)
+	client := core.NewPCClient(appIdEmail, secretTokenEmail)
 
 	email, err := GetEmail(client, appIdEmail, secretTokenEmail, emailId)
 	if err != nil {
@@ -124,7 +126,7 @@ func TestDeleteEmail(t *testing.T) {
 		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
 	}
 
-	client := NewPCClient(appIdEmail, secretTokenEmail, URL)
+	client := core.NewPCClient(appIdEmail, secretTokenEmail)
 
 	err := DeleteEmail(client, appIdEmail, secretTokenEmail, emailId)
 	if err != nil {

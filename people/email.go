@@ -1,24 +1,26 @@
-package client
+package people
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
 )
 
-func GetEmail(client *PC_Client, appId, secretToken, emailId string) (EmailRoot, error) {
+func GetEmail(client *core.PC_Client, appId, secretToken, emailId string) (core.EmailRoot, error) {
 	//Fetch the data
-	endpoint := HostURL + "people/v2/emails/" + emailId
+	endpoint := client.Endpoint + "people/v2/emails/" + emailId
 	request, err := http.NewRequest("GET", endpoint, nil)
 
 	// Make the request
-	body, err := client.doRequest(request, secretToken, appId)
+	body, err := client.DoRequest(request, secretToken, appId)
 	if err != nil {
-		return EmailRoot{}, fmt.Errorf("doRequest Error during GetEmail : %v\n", err)
+		return core.EmailRoot{}, fmt.Errorf("DoRequest Error during GetEmail : %v\n", err)
 	}
 
-	var jsonBody EmailRoot
+	var jsonBody core.EmailRoot
 	err = json.Unmarshal(body, &jsonBody)
 	if err != nil {
 		fmt.Print(err)
@@ -28,8 +30,8 @@ func GetEmail(client *PC_Client, appId, secretToken, emailId string) (EmailRoot,
 
 }
 
-func CreateEmail(client *PC_Client, appId, secretToken, peopleId string, responseData *EmailRootNoRelationship) ([]byte, error) {
-	endpoint := HostURL + "people/v2/people/" + peopleId + "/emails"
+func CreateEmail(client *core.PC_Client, appId, secretToken, peopleId string, responseData *core.EmailRootNoRelationship) ([]byte, error) {
+	endpoint := client.Endpoint + "people/v2/people/" + peopleId + "/emails"
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
@@ -47,16 +49,16 @@ func CreateEmail(client *PC_Client, appId, secretToken, peopleId string, respons
 	request.Header.Set("Content-Type", "application/json")
 
 	// Make the request
-	body, err := client.doRequest(request, secretToken, appId)
+	body, err := client.DoRequest(request, secretToken, appId)
 	if err != nil {
-		return nil, fmt.Errorf("doRequest error during CreateEmail : %w\n", err)
+		return nil, fmt.Errorf("DoRequest error during CreateEmail : %w\n", err)
 	}
 
 	return body, nil
 }
 
-func DeleteEmail(client *PC_Client, appId, secretToken, emailId string) error {
-	endpoint := HostURL + "people/v2/emails/" + emailId
+func DeleteEmail(client *core.PC_Client, appId, secretToken, emailId string) error {
+	endpoint := client.Endpoint + "people/v2/emails/" + emailId
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("DELETE", endpoint, nil)
@@ -65,9 +67,9 @@ func DeleteEmail(client *PC_Client, appId, secretToken, emailId string) error {
 	}
 
 	// Make the request
-	body, err := client.doRequest(request, secretToken, appId)
+	body, err := client.DoRequest(request, secretToken, appId)
 	if err != nil {
-		return fmt.Errorf("doRequest error during DeleteEmail: %v\n", err)
+		return fmt.Errorf("DoRequest error during DeleteEmail: %v\n", err)
 	}
 
 	fmt.Println(string(body))
@@ -75,8 +77,8 @@ func DeleteEmail(client *PC_Client, appId, secretToken, emailId string) error {
 
 }
 
-func UpdateEmail(client *PC_Client, appId, secretToken, emailId string, responseData *EmailRoot) ([]byte, error) {
-	endpoint := HostURL + "people/v2/emails/" + emailId
+func UpdateEmail(client *core.PC_Client, appId, secretToken, emailId string, responseData *core.EmailRoot) ([]byte, error) {
+	endpoint := client.Endpoint + "people/v2/emails/" + emailId
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
@@ -94,9 +96,9 @@ func UpdateEmail(client *PC_Client, appId, secretToken, emailId string, response
 	request.Header.Set("Content-Type", "application/json")
 
 	// Make the request
-	body, err := client.doRequest(request, secretToken, appId)
+	body, err := client.DoRequest(request, secretToken, appId)
 	if err != nil {
-		return nil, fmt.Errorf("doRequest error during UpdateEmail : %v\n", err)
+		return nil, fmt.Errorf("DoRequest error during UpdateEmail : %v\n", err)
 	}
 
 	return body, nil

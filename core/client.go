@@ -1,4 +1,4 @@
-package client
+package core
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-const HostURL = "https://api.planningcenteronline.com/"
+const hostURL = "https://api.planningcenteronline.com/"
 
 type PC_Client struct {
 	Client   *http.Client
@@ -15,17 +15,17 @@ type PC_Client struct {
 	Endpoint string
 }
 
-func NewPCClient(appId, secretToken, endpoint string) *PC_Client {
+func NewPCClient(appId, secretToken string) *PC_Client {
 	fmt.Println("Returning a new PCClient")
 	return &PC_Client{
 		Client:   &http.Client{},
 		AppID:    appId,
 		Token:    secretToken,
-		Endpoint: endpoint,
+		Endpoint: hostURL,
 	}
 }
 
-func (c *PC_Client) doRequest(req *http.Request, secretToken, appId string) ([]byte, error) {
+func (c *PC_Client) DoRequest(req *http.Request, secretToken, appId string) ([]byte, error) {
 
 	req.SetBasicAuth(appId, secretToken)
 

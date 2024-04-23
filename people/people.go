@@ -1,39 +1,41 @@
-package client
+package people
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
 )
 
-func GetPeople(client *PC_Client, appId, secretToken, peopleId string) (PeopleRoot, error) {
+func GetPeople(client *core.PC_Client, appId, secretToken, peopleId string) (core.PeopleRoot, error) {
 	//Fetch the data
-	endpoint := HostURL + "people/v2/people/" + peopleId
+	endpoint := client.Endpoint + "people/v2/people/" + peopleId
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		fmt.Println("Error creating request:", err)
 	}
 
 	//Send the request
-	body, err := client.doRequest(request, secretToken, appId)
+	body, err := client.DoRequest(request, secretToken, appId)
 	if err != nil {
-		return PeopleRoot{}, err
+		return core.PeopleRoot{}, err
 	}
 
 	//Convert from json to the struct
-	var jsonBody PeopleRoot
+	var jsonBody core.PeopleRoot
 	err = json.Unmarshal(body, &jsonBody)
 	if err != nil {
-		return PeopleRoot{}, fmt.Errorf("Error unmarshalling during GetPeople ::: %v\n", err)
+		return core.PeopleRoot{}, fmt.Errorf("Error unmarshalling during GetPeople ::: %v\n", err)
 	}
 
 	return jsonBody, nil
 
 }
 
-func CreatePeople(client *PC_Client, appId, secretToken string, responseData *PeopleRoot) ([]byte, error) {
-	endpoint := HostURL + "people/v2/people/"
+func CreatePeople(client *core.PC_Client, appId, secretToken string, responseData *core.PeopleRoot) ([]byte, error) {
+	endpoint := client.Endpoint + "people/v2/people/"
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
@@ -51,7 +53,7 @@ func CreatePeople(client *PC_Client, appId, secretToken string, responseData *Pe
 	request.Header.Set("Content-Type", "application/json")
 
 	// Make the request
-	body, err := client.doRequest(request, secretToken, appId)
+	body, err := client.DoRequest(request, secretToken, appId)
 	if err != nil {
 		return nil, err
 	}
@@ -59,8 +61,8 @@ func CreatePeople(client *PC_Client, appId, secretToken string, responseData *Pe
 	return body, nil
 }
 
-func DeletePeople(client *PC_Client, appId, secretToken, peopleId string) error {
-	endpoint := HostURL + "people/v2/people/" + peopleId
+func DeletePeople(client *core.PC_Client, appId, secretToken, peopleId string) error {
+	endpoint := client.Endpoint + "people/v2/people/" + peopleId
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("DELETE", endpoint, nil)
@@ -68,7 +70,7 @@ func DeletePeople(client *PC_Client, appId, secretToken, peopleId string) error 
 		return fmt.Errorf("Error creating request ::: %v", err)
 	}
 
-	_, err = client.doRequest(request, secretToken, appId)
+	_, err = client.DoRequest(request, secretToken, appId)
 	if err != nil {
 		return err
 	}
@@ -76,8 +78,8 @@ func DeletePeople(client *PC_Client, appId, secretToken, peopleId string) error 
 	return nil
 }
 
-func UpdatePeople(client *PC_Client, appId, secretToken, peopleId string, responseData *PeopleRoot) ([]byte, error) {
-	endpoint := HostURL + "people/v2/people/" + peopleId
+func UpdatePeople(client *core.PC_Client, appId, secretToken, peopleId string, responseData *core.PeopleRoot) ([]byte, error) {
+	endpoint := client.Endpoint + "people/v2/people/" + peopleId
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
@@ -95,7 +97,7 @@ func UpdatePeople(client *PC_Client, appId, secretToken, peopleId string, respon
 	request.Header.Set("Content-Type", "application/json")
 
 	// Make the request
-	body, err := client.doRequest(request, secretToken, peopleId)
+	body, err := client.DoRequest(request, secretToken, peopleId)
 	if err != nil {
 		return nil, err
 	}
