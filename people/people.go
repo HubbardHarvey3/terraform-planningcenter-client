@@ -18,7 +18,7 @@ func GetPeople(client *core.PC_Client, appId, secretToken, peopleId string) (cor
 	}
 
 	//Send the request
-	body, err := client.DoRequest(request, secretToken, appId)
+	body, err := client.DoRequest(request)
 	if err != nil {
 		return core.PeopleRoot{}, err
 	}
@@ -53,7 +53,7 @@ func CreatePeople(client *core.PC_Client, appId, secretToken string, responseDat
 	request.Header.Set("Content-Type", "application/json")
 
 	// Make the request
-	body, err := client.DoRequest(request, secretToken, appId)
+	body, err := client.DoRequest(request)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +70,7 @@ func DeletePeople(client *core.PC_Client, appId, secretToken, peopleId string) e
 		return fmt.Errorf("Error creating request ::: %v", err)
 	}
 
-	_, err = client.DoRequest(request, secretToken, appId)
+	_, err = client.DoRequest(request)
 	if err != nil {
 		return err
 	}
@@ -97,7 +97,7 @@ func UpdatePeople(client *core.PC_Client, appId, secretToken, peopleId string, r
 	request.Header.Set("Content-Type", "application/json")
 
 	// Make the request
-	body, err := client.DoRequest(request, secretToken, peopleId)
+	body, err := client.DoRequest(request)
 	if err != nil {
 		return nil, err
 	}

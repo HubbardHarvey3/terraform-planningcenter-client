@@ -2,6 +2,7 @@ package people
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -119,6 +120,37 @@ func TestGetAddress(t *testing.T) {
 	if address.Data.Attributes.City != "Hometown" {
 		t.Errorf("Address is not 'Hometown', but is showing as : %v", address.Data.Attributes.City)
 	}
+}
+
+func TestUpdateAddress(t *testing.T) {
+	var address core.AddressRoot
+
+	if appIdAddress == "" {
+		t.Errorf("Need Env Vars PC_APP_ID Set")
+	}
+	if secretTokenAddress == "" {
+		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
+	}
+	// Initialize your PC_Client with the mock server URL
+	client := core.NewPCClient(appIdAddress, secretTokenAddress)
+
+	address, err := GetAddress(client, appIdAddress, secretTokenAddress, addressId)
+	if err != nil {
+		t.Errorf("GetAddress failed with an error ::: %v\n", err)
+	}
+
+	address.Data.Attributes.City = "Updated"
+
+	var updatedAddress core.AddressRoot
+	response, err := UpdateAddress(client, appIdAddress, secretTokenAddress, addressId, &address)
+	fmt.Println(string(response))
+
+	json.Unmarshal(response, &updatedAddress)
+
+	if updatedAddress.Data.Attributes.City != "Updated" {
+		t.Errorf("Address is not 'Updated', but is showing as : %v", updatedAddress.Data.Attributes.City)
+	}
+
 }
 
 func TestDeleteAddress(t *testing.T) {

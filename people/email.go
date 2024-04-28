@@ -15,7 +15,7 @@ func GetEmail(client *core.PC_Client, appId, secretToken, emailId string) (core.
 	request, err := http.NewRequest("GET", endpoint, nil)
 
 	// Make the request
-	body, err := client.DoRequest(request, secretToken, appId)
+	body, err := client.DoRequest(request)
 	if err != nil {
 		return core.EmailRoot{}, fmt.Errorf("DoRequest Error during GetEmail : %v\n", err)
 	}
@@ -49,7 +49,7 @@ func CreateEmail(client *core.PC_Client, appId, secretToken, peopleId string, re
 	request.Header.Set("Content-Type", "application/json")
 
 	// Make the request
-	body, err := client.DoRequest(request, secretToken, appId)
+	body, err := client.DoRequest(request)
 	if err != nil {
 		return nil, fmt.Errorf("DoRequest error during CreateEmail : %w\n", err)
 	}
@@ -67,7 +67,7 @@ func DeleteEmail(client *core.PC_Client, appId, secretToken, emailId string) err
 	}
 
 	// Make the request
-	body, err := client.DoRequest(request, secretToken, appId)
+	body, err := client.DoRequest(request)
 	if err != nil {
 		return fmt.Errorf("DoRequest error during DeleteEmail: %v\n", err)
 	}
@@ -96,7 +96,7 @@ func UpdateEmail(client *core.PC_Client, appId, secretToken, emailId string, res
 	request.Header.Set("Content-Type", "application/json")
 
 	// Make the request
-	body, err := client.DoRequest(request, secretToken, appId)
+	body, err := client.DoRequest(request)
 	if err != nil {
 		return nil, fmt.Errorf("DoRequest error during UpdateEmail : %v\n", err)
 	}

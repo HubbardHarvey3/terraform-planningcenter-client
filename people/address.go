@@ -18,7 +18,7 @@ func GetAddress(client *core.PC_Client, appId, secretToken, addressId string) (c
 	}
 
 	//Send the request
-	body, err := client.DoRequest(request, secretToken, appId)
+	body, err := client.DoRequest(request)
 	if err != nil {
 		return core.AddressRoot{}, err
 	}
@@ -53,7 +53,7 @@ func CreateAddress(client *core.PC_Client, appId, secretToken, peopleId string, 
 	request.Header.Set("Content-Type", "application/json")
 
 	// Make the request
-	body, err := client.DoRequest(request, secretToken, appId)
+	body, err := client.DoRequest(request)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -71,7 +71,7 @@ func DeleteAddress(client *core.PC_Client, appId, secretToken, addressId string)
 		return fmt.Errorf("Error creating request ::: %v", err)
 	}
 
-	_, err = client.DoRequest(request, secretToken, appId)
+	_, err = client.DoRequest(request)
 	if err != nil {
 		return err
 	}
@@ -79,8 +79,8 @@ func DeleteAddress(client *core.PC_Client, appId, secretToken, addressId string)
 	return nil
 }
 
-func UpdateAddress(client *core.PC_Client, appId, secretToken, peopleId string, responseData *core.PeopleRoot) ([]byte, error) {
-	endpoint := client.Endpoint + "people/v2/people/" + peopleId
+func UpdateAddress(client *core.PC_Client, appId, secretToken, addressId string, responseData *core.AddressRoot) ([]byte, error) {
+	endpoint := client.Endpoint + "people/v2/addresses/" + addressId
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
@@ -98,10 +98,11 @@ func UpdateAddress(client *core.PC_Client, appId, secretToken, peopleId string, 
 	request.Header.Set("Content-Type", "application/json")
 
 	// Make the request
-	body, err := client.DoRequest(request, secretToken, peopleId)
+	body, err := client.DoRequest(request)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(string(body))
 
 	return body, nil
 

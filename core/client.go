@@ -25,9 +25,9 @@ func NewPCClient(appId, secretToken string) *PC_Client {
 	}
 }
 
-func (c *PC_Client) DoRequest(req *http.Request, secretToken, appId string) ([]byte, error) {
+func (c *PC_Client) DoRequest(req *http.Request) ([]byte, error) {
 
-	req.SetBasicAuth(appId, secretToken)
+	req.SetBasicAuth(c.AppID, c.Token)
 
 	response, err := c.Client.Do(req)
 	if err != nil {

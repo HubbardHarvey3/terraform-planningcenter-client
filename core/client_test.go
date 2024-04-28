@@ -22,7 +22,7 @@ func TestPCClient_DoRequest(t *testing.T) {
 		t.Fatalf("Failed to create request: %v", err)
 	}
 
-	responseBody, err := client.DoRequest(req, secret_token, app_id)
+	responseBody, err := client.DoRequest(req)
 	if err != nil {
 		t.Fatalf("Request failed: %v", err)
 	}
