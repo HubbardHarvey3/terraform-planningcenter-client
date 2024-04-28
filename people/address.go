@@ -9,7 +9,12 @@ import (
 	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
 )
 
-func GetAddress(client *core.PC_Client, appId, secretToken, addressId string) (core.AddressRoot, error) {
+/*
+GET HTTP Method to get an address object.
+
+Endpoint = /people/v2/addresses/<address ID>
+*/
+func GetAddress(client *core.PC_Client, addressId string) (core.AddressRoot, error) {
 	//Fetch the data
 	endpoint := client.Endpoint + "people/v2/addresses/" + addressId
 	request, err := http.NewRequest("GET", endpoint, nil)
@@ -34,7 +39,23 @@ func GetAddress(client *core.PC_Client, appId, secretToken, addressId string) (c
 
 }
 
-func CreateAddress(client *core.PC_Client, appId, secretToken, peopleId string, responseData *core.AddressRootNoRelationship) ([]byte, error) {
+/*
+POST HTTP Method to create an address object.  On create, the address is automatically
+assigned to the person ID listed in the endpoint
+
+Assignable Attributes
+  - city
+  - state
+  - zip
+  - country_cde
+  - location
+  - primary
+  - street_line_1
+  - street_line_2
+
+Endpoint = /people/v2/people/<people ID>/addresses
+*/
+func CreateAddress(client *core.PC_Client, peopleId string, responseData *core.AddressRootNoRelationship) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/people/" + peopleId + "/addresses"
 
 	// Convert struct to JSON
@@ -62,7 +83,12 @@ func CreateAddress(client *core.PC_Client, appId, secretToken, peopleId string, 
 	return body, nil
 }
 
-func DeleteAddress(client *core.PC_Client, appId, secretToken, addressId string) error {
+/*
+Delete HTTP Method to remove an address.
+
+Endpoint = /people/v2/addresses/<address ID>
+*/
+func DeleteAddress(client *core.PC_Client, addressId string) error {
 	endpoint := client.Endpoint + "people/v2/addresses/" + addressId
 
 	// Create a request with the JSON data
@@ -79,7 +105,22 @@ func DeleteAddress(client *core.PC_Client, appId, secretToken, addressId string)
 	return nil
 }
 
-func UpdateAddress(client *core.PC_Client, appId, secretToken, addressId string, responseData *core.AddressRoot) ([]byte, error) {
+/*
+PATCH HTTP Method to update the address for a person.
+
+Assignable Attributes
+  - city
+  - state
+  - zip
+  - country_cde
+  - location
+  - primary
+  - street_line_1
+  - street_line_2
+
+Endpoint = /people/v2/addresses/<address ID>
+*/
+func UpdateAddress(client *core.PC_Client, addressId string, responseData *core.AddressRootNoRelationship) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/addresses/" + addressId
 
 	// Convert struct to JSON
@@ -100,9 +141,9 @@ func UpdateAddress(client *core.PC_Client, appId, secretToken, addressId string,
 	// Make the request
 	body, err := client.DoRequest(request)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
-	fmt.Println(string(body))
 
 	return body, nil
 

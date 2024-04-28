@@ -52,7 +52,7 @@ func TestCreatePeople(t *testing.T) {
 
 	client := core.NewPCClient(appId, secretToken)
 
-	person, err := CreatePeople(client, appId, secretToken, &data)
+	person, err := CreatePeople(client, &data)
 	if err != nil {
 		t.Errorf("Error during CreatePeople :: %v\n", err)
 	}
@@ -78,7 +78,7 @@ func TestGetPeople(t *testing.T) {
 	// Initialize your PC_Client with the mock server URL
 	client := core.NewPCClient(appId, secretToken)
 
-	person, err := GetPeople(client, appId, secretToken, personId)
+	person, err := GetPeople(client, personId)
 	if err != nil {
 		t.Errorf("GetPeople failed with an error ::: %v\n", err)
 	}
@@ -103,9 +103,9 @@ func TestDeletePeople(t *testing.T) {
 
 	client := core.NewPCClient(appId, secretToken)
 
-	DeletePeople(client, appId, secretToken, personId)
+	DeletePeople(client, personId)
 
-	_, err := GetPeople(client, appId, secretToken, personId)
+	_, err := GetPeople(client, personId)
 	if !strings.Contains(err.Error(), "404") {
 		t.Errorf("GetPeople should be throwing a 404 after the person was deleted")
 	}

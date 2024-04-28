@@ -119,11 +119,11 @@ type AddressRelationships struct {
 }
 
 type AddressPerson struct {
-	Data AddressPersonData `json:"person,omitempty"`
+	Data AddressPersonData `json:"data,omitempty"`
 }
 
 type AddressPersonData struct {
-	Type string `json:"person,omitempty"`
+	Type string `json:"type,omitempty"`
 	ID   string `json:"id,omitempty"`
 }
 

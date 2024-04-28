@@ -2,7 +2,6 @@ package people
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -73,7 +72,7 @@ func TestCreateAddress(t *testing.T) {
 
 	client := core.NewPCClient(appIdEmail, secretTokenEmail)
 
-	person, err := CreatePeople(client, appIdEmail, secretTokenEmail, &dataPerson)
+	person, err := CreatePeople(client, &dataPerson)
 	if err != nil {
 		t.Errorf("Error during CreatePeople :: %v\n", err)
 	}
@@ -88,7 +87,7 @@ func TestCreateAddress(t *testing.T) {
 		t.Error(err)
 	}
 
-	addressBytes, err := CreateAddress(client, appIdAddress, secretTokenAddress, personIdAddress, &dataAddress)
+	addressBytes, err := CreateAddress(client, personIdAddress, &dataAddress)
 
 	var address core.AddressRootNoRelationship
 	json.Unmarshal(addressBytes, &address)
@@ -112,7 +111,7 @@ func TestGetAddress(t *testing.T) {
 	// Initialize your PC_Client with the mock server URL
 	client := core.NewPCClient(appIdAddress, secretTokenAddress)
 
-	address, err := GetAddress(client, appIdAddress, secretTokenAddress, addressId)
+	address, err := GetAddress(client, addressId)
 	if err != nil {
 		t.Errorf("GetAddress failed with an error ::: %v\n", err)
 	}
@@ -122,6 +121,14 @@ func TestGetAddress(t *testing.T) {
 	}
 }
 
+/*
+The Get request for an object returns the relationships listed in the json.
+Therefore, the struct that is used with GET requests, should have the relationships.
+For Updates, you get a 422 if you attempt to update using a json payload that contains relationships
+For now, I am copying the attributes from the Root struct to the RootNoRelationship model
+
+TODO - Fix Email Updates and create test
+*/
 func TestUpdateAddress(t *testing.T) {
 	var address core.AddressRoot
 
@@ -134,16 +141,17 @@ func TestUpdateAddress(t *testing.T) {
 	// Initialize your PC_Client with the mock server URL
 	client := core.NewPCClient(appIdAddress, secretTokenAddress)
 
-	address, err := GetAddress(client, appIdAddress, secretTokenAddress, addressId)
+	address, err := GetAddress(client, addressId)
 	if err != nil {
 		t.Errorf("GetAddress failed with an error ::: %v\n", err)
 	}
 
 	address.Data.Attributes.City = "Updated"
+	// Alter to without Relationships .... TODO Make this better
+	var updatedAddress core.AddressRootNoRelationship
+	updatedAddress.Data.Attributes = address.Data.Attributes
 
-	var updatedAddress core.AddressRoot
-	response, err := UpdateAddress(client, appIdAddress, secretTokenAddress, addressId, &address)
-	fmt.Println(string(response))
+	response, err := UpdateAddress(client, addressId, &updatedAddress)
 
 	json.Unmarshal(response, &updatedAddress)
 
@@ -163,17 +171,17 @@ func TestDeleteAddress(t *testing.T) {
 
 	client := core.NewPCClient(appIdAddress, secretTokenAddress)
 
-	err := DeleteAddress(client, appIdAddress, secretTokenAddress, addressId)
+	err := DeleteAddress(client, addressId)
 	if err != nil {
 		t.Errorf("Error during DeleteAddress : %v\n", err)
 	}
 
-	_, err = GetAddress(client, appIdAddress, secretTokenAddress, personIdAddress)
+	_, err = GetAddress(client, personIdAddress)
 	if !strings.Contains(err.Error(), "404") {
 		t.Errorf("GetAddress should be throwing a 404 after the person was deleted")
 	}
 
-	err = DeletePeople(client, appIdAddress, secretTokenAddress, personIdAddress)
+	err = DeletePeople(client, personIdAddress)
 	if err != nil {
 		t.Errorf("Failed cleaning up testing resource")
 	}

@@ -9,7 +9,7 @@ import (
 	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
 )
 
-func GetPeople(client *core.PC_Client, appId, secretToken, peopleId string) (core.PeopleRoot, error) {
+func GetPeople(client *core.PC_Client, peopleId string) (core.PeopleRoot, error) {
 	//Fetch the data
 	endpoint := client.Endpoint + "people/v2/people/" + peopleId
 	request, err := http.NewRequest("GET", endpoint, nil)
@@ -34,7 +34,7 @@ func GetPeople(client *core.PC_Client, appId, secretToken, peopleId string) (cor
 
 }
 
-func CreatePeople(client *core.PC_Client, appId, secretToken string, responseData *core.PeopleRoot) ([]byte, error) {
+func CreatePeople(client *core.PC_Client, responseData *core.PeopleRoot) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/people/"
 
 	// Convert struct to JSON
@@ -61,7 +61,7 @@ func CreatePeople(client *core.PC_Client, appId, secretToken string, responseDat
 	return body, nil
 }
 
-func DeletePeople(client *core.PC_Client, appId, secretToken, peopleId string) error {
+func DeletePeople(client *core.PC_Client, peopleId string) error {
 	endpoint := client.Endpoint + "people/v2/people/" + peopleId
 
 	// Create a request with the JSON data
@@ -78,7 +78,7 @@ func DeletePeople(client *core.PC_Client, appId, secretToken, peopleId string) e
 	return nil
 }
 
-func UpdatePeople(client *core.PC_Client, appId, secretToken, peopleId string, responseData *core.PeopleRoot) ([]byte, error) {
+func UpdatePeople(client *core.PC_Client, peopleId string, responseData *core.PeopleRoot) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/people/" + peopleId
 
 	// Convert struct to JSON

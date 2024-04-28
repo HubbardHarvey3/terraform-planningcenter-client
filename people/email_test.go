@@ -68,7 +68,7 @@ func TestCreateEmail(t *testing.T) {
 
 	client := core.NewPCClient(appIdEmail, secretTokenEmail)
 
-	person, err := CreatePeople(client, appIdEmail, secretTokenEmail, &dataPerson)
+	person, err := CreatePeople(client, &dataPerson)
 	if err != nil {
 		t.Errorf("Error during CreatePeople :: %v\n", err)
 	}
@@ -83,7 +83,7 @@ func TestCreateEmail(t *testing.T) {
 		t.Error(err)
 	}
 
-	emailBytes, err := CreateEmail(client, appIdEmail, secretTokenEmail, personId, &dataEmail)
+	emailBytes, err := CreateEmail(client, personId, &dataEmail)
 
 	var email core.EmailRootNoRelationship
 	json.Unmarshal(emailBytes, &email)
@@ -107,7 +107,7 @@ func TestGetEmail(t *testing.T) {
 	// Initialize your PC_Client with the mock server URL
 	client := core.NewPCClient(appIdEmail, secretTokenEmail)
 
-	email, err := GetEmail(client, appIdEmail, secretTokenEmail, emailId)
+	email, err := GetEmail(client, emailId)
 	if err != nil {
 		t.Errorf("GetPeople failed with an error ::: %v\n", err)
 	}
@@ -128,17 +128,17 @@ func TestDeleteEmail(t *testing.T) {
 
 	client := core.NewPCClient(appIdEmail, secretTokenEmail)
 
-	err := DeleteEmail(client, appIdEmail, secretTokenEmail, emailId)
+	err := DeleteEmail(client, emailId)
 	if err != nil {
 		t.Errorf("Error during DeleteEmail : %v\n", err)
 	}
 
-	_, err = GetEmail(client, appIdEmail, secretTokenEmail, emailId)
+	_, err = GetEmail(client, emailId)
 	if !strings.Contains(err.Error(), "404") {
 		t.Errorf("GetEmail should be throwing a 404 after the person was deleted")
 	}
 
-	err = DeletePeople(client, appIdEmail, secretTokenEmail, personId)
+	err = DeletePeople(client, personId)
 	if err != nil {
 		t.Errorf("Failed cleaning up testing resource")
 	}

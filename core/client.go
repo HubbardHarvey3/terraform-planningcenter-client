@@ -41,6 +41,7 @@ func (c *PC_Client) DoRequest(req *http.Request) ([]byte, error) {
 	defer response.Body.Close()
 
 	if response.StatusCode > 299 {
+		fmt.Println(response.StatusCode)
 		return nil, fmt.Errorf("status : %d\n, body : %s", response.StatusCode, body)
 	}
 

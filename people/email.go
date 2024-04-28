@@ -9,7 +9,7 @@ import (
 	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
 )
 
-func GetEmail(client *core.PC_Client, appId, secretToken, emailId string) (core.EmailRoot, error) {
+func GetEmail(client *core.PC_Client, emailId string) (core.EmailRoot, error) {
 	//Fetch the data
 	endpoint := client.Endpoint + "people/v2/emails/" + emailId
 	request, err := http.NewRequest("GET", endpoint, nil)
@@ -30,7 +30,7 @@ func GetEmail(client *core.PC_Client, appId, secretToken, emailId string) (core.
 
 }
 
-func CreateEmail(client *core.PC_Client, appId, secretToken, peopleId string, responseData *core.EmailRootNoRelationship) ([]byte, error) {
+func CreateEmail(client *core.PC_Client, peopleId string, responseData *core.EmailRootNoRelationship) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/people/" + peopleId + "/emails"
 
 	// Convert struct to JSON
@@ -57,7 +57,7 @@ func CreateEmail(client *core.PC_Client, appId, secretToken, peopleId string, re
 	return body, nil
 }
 
-func DeleteEmail(client *core.PC_Client, appId, secretToken, emailId string) error {
+func DeleteEmail(client *core.PC_Client, emailId string) error {
 	endpoint := client.Endpoint + "people/v2/emails/" + emailId
 
 	// Create a request with the JSON data
@@ -77,7 +77,7 @@ func DeleteEmail(client *core.PC_Client, appId, secretToken, emailId string) err
 
 }
 
-func UpdateEmail(client *core.PC_Client, appId, secretToken, emailId string, responseData *core.EmailRoot) ([]byte, error) {
+func UpdateEmail(client *core.PC_Client, emailId string, responseData *core.EmailRootNoRelationship) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/emails/" + emailId
 
 	// Convert struct to JSON
