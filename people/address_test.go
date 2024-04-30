@@ -178,7 +178,7 @@ func TestDeleteAddress(t *testing.T) {
 
 	_, err = GetAddress(client, personIdAddress)
 	if !strings.Contains(err.Error(), "404") {
-		t.Errorf("GetAddress should be throwing a 404 after the person was deleted")
+		t.Errorf("GetAddress should be throwing a 404 after the person was deleted.  Error was %v", err)
 	}
 
 	err = DeletePeople(client, personIdAddress)

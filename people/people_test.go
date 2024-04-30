@@ -92,6 +92,47 @@ func TestGetPeople(t *testing.T) {
 	}
 }
 
+/*
+The Get request for an object returns the relationships listed in the json.
+Therefore, the struct that is used with GET requests, should have the relationships.
+For Updates, you get a 422 if you attempt to update using a json payload that contains relationships
+For now, I am copying the attributes from the Root struct to the RootNoRelationship model
+
+TODO - Fix Email Updates and create test
+*/
+func TestUpdatePeople(t *testing.T) {
+	var person core.PeopleRoot
+
+	if appId == "" {
+		t.Errorf("Need Env Vars PC_APP_ID Set")
+	}
+	if secretToken == "" {
+		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
+	}
+	// Initialize your PC_Client with the mock server URL
+	client := core.NewPCClient(appId, secretToken)
+
+	person, err := GetPeople(client, personId)
+	if err != nil {
+		t.Errorf("GetPeople failed with an error ::: %v\n", err)
+	}
+
+	person.Data.Attributes.FirstName = "UpdateName"
+
+	// Convert EmailRoot to EmailRootNoRelationships
+	var updatedPerson core.PeopleRoot
+	updatedPerson.Data.Attributes = person.Data.Attributes
+
+	response, err := UpdatePeople(client, emailId, &updatedPerson)
+
+	json.Unmarshal(response, &updatedPerson)
+
+	if updatedPerson.Data.Attributes.FirstName != "UpdateName" {
+		t.Errorf("email is not 'UpdatedName', but is showing as : %v", updatedPerson.Data.Attributes.FirstName)
+	}
+
+}
+
 func TestDeletePeople(t *testing.T) {
 
 	if appId == "" {

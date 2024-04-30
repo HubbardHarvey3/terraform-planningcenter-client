@@ -23,7 +23,7 @@ func GetEmail(client *core.PC_Client, emailId string) (core.EmailRoot, error) {
 	var jsonBody core.EmailRoot
 	err = json.Unmarshal(body, &jsonBody)
 	if err != nil {
-		fmt.Print(err)
+		return core.EmailRoot{}, fmt.Errorf("Error in GetEmail unmarshalling : %w ", err)
 	}
 
 	return jsonBody, nil
@@ -36,13 +36,13 @@ func CreateEmail(client *core.PC_Client, peopleId string, responseData *core.Ema
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
 	if err != nil {
-		fmt.Errorf("Error marshalling JSON: %w", err)
+		return nil, fmt.Errorf("Error marshalling JSON: %w", err)
 	}
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
-		fmt.Errorf("Error creating request: %w", err)
+		return nil, fmt.Errorf("Error creating request: %w", err)
 	}
 
 	// Set the content type to application/json
