@@ -66,13 +66,11 @@ func DeleteEmail(client *core.PC_Client, emailId string) error {
 		return fmt.Errorf("NewRequest error in DeleteEmail : %v\n", err)
 	}
 
-	// Make the request
-	body, err := client.DoRequest(request)
+	_, err = client.DoRequest(request)
 	if err != nil {
-		return fmt.Errorf("DoRequest error during DeleteEmail: %v\n", err)
+		return err
 	}
 
-	fmt.Println(string(body))
 	return nil
 
 }
