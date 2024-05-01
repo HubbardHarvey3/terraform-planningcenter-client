@@ -127,70 +127,22 @@ type AddressPersonData struct {
 	ID   string `json:"id,omitempty"`
 }
 
-/*
-{
-  "links": {
-    "self": "https://api.planningcenteronline.com/people/v2/addresses"
-  },
-  "data": [
-    {
-      "type": "Address",
-      "id": "112014048",
-      "attributes": {
-        "city": "Hometown",
-        "country_code": "US",
-        "country_name": "United States",
-        "created_at": "2024-04-23T10:57:38Z",
-        "location": "Home",
-        "primary": true,
-        "state": "GA",
-        "street": "1234\nCool Name Avenue",
-        "updated_at": "2024-04-23T10:57:38Z",
-        "zip": "555555"
-      },
-      "relationships": {
-        "person": {
-          "data": {
-            "type": "Person",
-            "id": "138378248"
-          }
-        }
-      },
-      "links": {
-        "self": "https://api.planningcenteronline.com/people/v2/addresses/112014048"
-      }
-    }
-  ],
-  "included": [],
-  "meta": {
-    "total_count": 1,
-    "count": 1,
-    "can_order_by": [
-      "city",
-      "state",
-      "zip",
-      "country_code",
-      "location",
-      "primary",
-      "created_at",
-      "updated_at",
-      "street_line_1",
-      "street_line_2",
-      "street"
-    ],
-    "can_query_by": [
-      "city",
-      "state",
-      "zip",
-      "country_code",
-      "location",
-      "primary",
-      "street"
-    ],
-    "parent": {
-      "id": "458241",
-      "type": "Organization"
-    }
-  }
+// ************ Organization ************
+
+type OrganizationRoot struct {
+	Data Organization `json:"data"`
 }
-*/
+
+type Organization struct {
+	Type       string                 `json:"type"`
+	ID         string                 `json:"id"`
+	Attributes OrganizationAttributes `json:"attributes"`
+}
+
+type OrganizationAttributes struct {
+	Name           string `json:"name"`
+	CountryCode    string `json:"country_code"`
+	DateFormat     int    `json:"date_format"`
+	TimeZone       string `json:"time_zone"`
+	ContactWebsite string `json:"contact_website"`
+}
