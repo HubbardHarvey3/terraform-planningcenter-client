@@ -129,11 +129,11 @@ type AddressPersonData struct {
 
 // ************ Organization ************
 
-type OrganizationRoot struct {
+type OrganizationRootNoRelationship struct {
 	Data Organization `json:"data"`
 }
 
-type Organization struct {
+type OrganizationNoRelationship struct {
 	Type       string                 `json:"type"`
 	ID         string                 `json:"id"`
 	Attributes OrganizationAttributes `json:"attributes"`
@@ -145,4 +145,28 @@ type OrganizationAttributes struct {
 	DateFormat     string `json:"date_format"`
 	TimeZone       string `json:"time_zone"`
 	ContactWebsite string `json:"contact_website"`
+}
+
+type OrganizationRoot struct {
+	Data []Organization `json:"data"`
+}
+
+type Organization struct {
+	Type          string                    `json:"type"`
+	ID            string                    `json:"id"`
+	Attributes    OrganizationAttributes    `json:"attributes"`
+	Relationships OrganizationRelationships `json:"relationships"`
+}
+
+type OrganizationRelationships struct {
+	Data OrganizationPerson `json:"person"`
+}
+
+type OrganizationPerson struct {
+	Person OrganizationPersonData `json:"data"`
+}
+
+type OrganizationPersonData struct {
+	Type string `json:"type"`
+	ID   string `json:"id"`
 }

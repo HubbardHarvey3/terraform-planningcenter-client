@@ -1,6 +1,7 @@
 package people
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"testing"
@@ -26,15 +27,29 @@ func TestGetOrganization(t *testing.T) {
 		t.Errorf("GetPeople failed with an error ::: %v\n", err)
 	}
 
-	fmt.Println(org)
-	fmt.Println("Org NAME ::: " + org.Data.Attributes.Name)
+	if org.Data.Attributes.Name != "CBC" {
+		t.Errorf("Expected org.Data.Attributes.Name to be CBC, instead got %v\n", org.Data.Attributes.Name)
+	}
 
-	//	if person.Data.Attributes.FirstName != "UnitTest" {
-	//		t.Errorf("Expected person.Data.ATtributes.FirstName to be UnitTest, instead got %v\n", person.Data.Attributes.FirstName)
-	//	}
-	//
-	//	if person.Data.Attributes.Birthdate != "1990-01-01" {
-	//		t.Errorf("Expected person.Data.Attributes.Birthdate to be 1990-01-01, instead got %v\n", person.Data.Attributes.Birthdate)
-	//	}
+}
+
+func TestGetOrganizationPeople(t *testing.T) {
+	if appIdOrganization == "" {
+		t.Errorf("Need Env Vars PC_APP_ID Set")
+	}
+	if secretTokenOrganization == "" {
+		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
+	}
+
+	client := core.NewPCClient(appIdOrganization, secretTokenOrganization)
+
+	org, err := GetOrganizationPeople(client)
+	if err != nil {
+		t.Errorf("GetPeople failed with an error ::: %v\n", err)
+	}
+
+	orgJSON, _ := json.Marshal(org)
+
+	fmt.Println(string(orgJSON))
 
 }
