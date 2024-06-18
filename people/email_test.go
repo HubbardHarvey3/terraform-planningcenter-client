@@ -37,7 +37,7 @@ var responseEmail = `{
 	"data": {
 		"type": "Email",
 		"attributes": {
-			"address": "john.doe@example.com",
+			"address": "john.doe@gmail.com",
 			"location": "Home",
 			"primary": true
 		}
@@ -84,13 +84,16 @@ func TestCreateEmail(t *testing.T) {
 	}
 
 	emailBytes, err := CreateEmail(client, personId, &dataEmail)
+	if err != nil {
+		t.Error(err)
+	}
 
 	var email core.EmailRootNoRelationship
 	json.Unmarshal(emailBytes, &email)
 	emailId = email.Data.ID
 
-	if email.Data.Attributes.Address != "john.doe@example.com" {
-		t.Errorf("Address is not john.doe@example.com, but is showing as : %v", email.Data.Attributes.Address)
+	if email.Data.Attributes.Address != "john.doe@gmail.com" {
+		t.Errorf("Address is not john.doe@gmail.com, but is showing as : %v", email.Data.Attributes.Address)
 	}
 
 }
@@ -112,8 +115,8 @@ func TestGetEmail(t *testing.T) {
 		t.Errorf("GetPeople failed with an error ::: %v\n", err)
 	}
 
-	if email.Data.Attributes.Address != "john.doe@example.com" {
-		t.Errorf("Address is not john.doe@example.com, but is showing as : %v", email.Data.Attributes.Address)
+	if email.Data.Attributes.Address != "john.doe@gmail.com" {
+		t.Errorf("Address is not john.doe@gmail.com, but is showing as : %v", email.Data.Attributes.Address)
 	}
 }
 
@@ -142,18 +145,21 @@ func TestUpdateEmail(t *testing.T) {
 		t.Errorf("Getemail failed with an error ::: %v\n", err)
 	}
 
-	email.Data.Attributes.Address = "john.doe.updated@example.com"
+	email.Data.Attributes.Address = "john.doe.updated@gmail.com"
 
 	// Convert EmailRoot to EmailRootNoRelationships
 	var updatedEmail core.EmailRootNoRelationship
 	updatedEmail.Data.Attributes = email.Data.Attributes
 
 	response, err := UpdateEmail(client, emailId, &updatedEmail)
+	if err != nil {
+		t.Error(err)
+	}
 
 	json.Unmarshal(response, &updatedEmail)
 
-	if updatedEmail.Data.Attributes.Address != "john.doe.updated@example.com" {
-		t.Errorf("email is not 'john.doe.updated@example.com', but is showing as : %v", updatedEmail.Data.Attributes.Address)
+	if updatedEmail.Data.Attributes.Address != "john.doe.updated@gmail.com" {
+		t.Errorf("email is not 'john.doe.updated@gmail.com', but is showing as : %v", updatedEmail.Data.Attributes.Address)
 	}
 
 }

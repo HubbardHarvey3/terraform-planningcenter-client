@@ -1,7 +1,6 @@
 package people
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"testing"
@@ -33,7 +32,7 @@ func TestGetOrganization(t *testing.T) {
 
 }
 
-func TestGetOrganizationPeople(t *testing.T) {
+func TestGetOrganizationAddress(t *testing.T) {
 	if appIdOrganization == "" {
 		t.Errorf("Need Env Vars PC_APP_ID Set")
 	}
@@ -43,13 +42,11 @@ func TestGetOrganizationPeople(t *testing.T) {
 
 	client := core.NewPCClient(appIdOrganization, secretTokenOrganization)
 
-	org, err := GetOrganizationPeople(client)
+	org, err := GetOrganizationAddress(client)
 	if err != nil {
 		t.Errorf("GetPeople failed with an error ::: %v\n", err)
 	}
 
-	orgJSON, _ := json.Marshal(org)
-
-	fmt.Println(string(orgJSON))
+	fmt.Println("*********" + org.Data[0].Attributes.Name)
 
 }

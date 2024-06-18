@@ -32,7 +32,7 @@ func GetOrganization(client *core.PC_Client) (core.OrganizationRootNoRelationshi
 	return jsonBody, nil
 }
 
-func GetOrganizationPeople(client *core.PC_Client) (core.OrganizationRoot, error) {
+func GetOrganizationAddress(client *core.PC_Client) (core.OrganizationRoot, error) {
 	//Fetch the data
 	endpoint := client.Endpoint + "people/v2/addresses"
 	request, err := http.NewRequest("GET", endpoint, nil)
@@ -45,7 +45,6 @@ func GetOrganizationPeople(client *core.PC_Client) (core.OrganizationRoot, error
 	if err != nil {
 		return core.OrganizationRoot{}, err
 	}
-	fmt.Println(string(body))
 
 	//Convert from json to the struct
 	var jsonBody core.OrganizationRoot
