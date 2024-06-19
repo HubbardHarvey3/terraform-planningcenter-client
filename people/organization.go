@@ -13,7 +13,7 @@ func GetOrganization(client *core.PC_Client) (core.OrganizationRootNoRelationshi
 	endpoint := client.Endpoint + "people/v2"
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		fmt.Println("Error creating request:", err)
+		return core.OrganizationRootNoRelationship{}, fmt.Errorf("Error creating request: %v\n", err)
 	}
 
 	//Send the request
@@ -37,13 +37,13 @@ func GetOrganizationAddress(client *core.PC_Client) (core.OrganizationRoot, erro
 	endpoint := client.Endpoint + "people/v2/addresses"
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		fmt.Println("Error creating request:", err)
+		return core.OrganizationRoot{}, fmt.Errorf("Error creating request: %v\n", err)
 	}
 
 	//Send the request
 	body, err := client.DoRequest(request)
 	if err != nil {
-		return core.OrganizationRoot{}, err
+		return core.OrganizationRoot{}, fmt.Errorf("Error executing the request: %v\n", err)
 	}
 
 	//Convert from json to the struct
@@ -53,5 +53,6 @@ func GetOrganizationAddress(client *core.PC_Client) (core.OrganizationRoot, erro
 		return core.OrganizationRoot{}, fmt.Errorf("Error unmarshalling during GetOrganization ::: %v\n", err)
 	}
 
+	fmt.Println(string(jsonBody.Data[0].Attributes.Name))
 	return jsonBody, nil
 }
