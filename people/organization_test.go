@@ -1,7 +1,6 @@
 package people
 
 import (
-	"fmt"
 	"os"
 	"testing"
 
@@ -47,6 +46,7 @@ func TestGetOrganizationAddress(t *testing.T) {
 		t.Errorf("GetPeople failed with an error ::: %v\n", err)
 	}
 
-	fmt.Println("*********" + org.Data[0].Attributes.Name)
-
+	if org.Data[0].Attributes.City != "Hometown" {
+		t.Errorf("Expected org.Data[0].Attributes.City to be Hometown, instead got %v\n", org.Data[0].Attributes.City)
+	}
 }

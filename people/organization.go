@@ -53,6 +53,5 @@ func GetOrganizationAddress(client *core.PC_Client) (core.OrganizationRoot, erro
 		return core.OrganizationRoot{}, fmt.Errorf("Error unmarshalling during GetOrganization ::: %v\n", err)
 	}
 
-	fmt.Println(string(jsonBody.Data[0].Attributes.Name))
 	return jsonBody, nil
 }
