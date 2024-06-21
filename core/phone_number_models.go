@@ -13,7 +13,7 @@ type PhoneNumberNoRelationship struct {
 }
 
 type PhoneNumberRoot struct {
-	Data PhoneNumber `json:"data,omitempty"`
+	Data []PhoneNumber `json:"data,omitempty"`
 }
 
 type PhoneNumber struct {
@@ -24,14 +24,10 @@ type PhoneNumber struct {
 }
 
 type PhoneNumberAttributes struct {
-	Carrier       string `json:"carrier"`
-	Country_Code  string `json:"country_code"`
-	E164          string `json:"e164"`
-	International string `json:"international"`
-	Location      string `json:"location"`
-	National      string `json:"national"`
-	Number        string `json:"number"`
-	Primary       string `json:"primary"`
+	Carrier  string `json:"carrier"`
+	Location string `json:"location"`
+	Number   string `json:"number"`
+	Primary  bool   `json:"primary"`
 }
 
 type PhoneNumberRelationships struct {
