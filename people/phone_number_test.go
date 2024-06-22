@@ -153,7 +153,7 @@ func TestUpdatePhoneNumber(t *testing.T) {
 	json.Unmarshal(response, &updatedPhoneNumber)
 
 	if updatedPhoneNumber.Data.Attributes.Location != "Home" {
-		t.Errorf("Address is not 'Updated', but is showing as : %v", updatedPhoneNumber.Data.Attributes.Location)
+		t.Errorf("Location is not 'Home', but is showing as : %v", updatedPhoneNumber.Data.Attributes.Location)
 	}
 
 }

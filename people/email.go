@@ -9,6 +9,11 @@ import (
 	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
 )
 
+/*
+GET HTTP Method to get an email object.
+
+Endpoint = /people/v2/email/<email ID>
+*/
 func GetEmail(client *core.PC_Client, emailId string) (core.EmailRoot, error) {
 	//Fetch the data
 	endpoint := client.Endpoint + "people/v2/emails/" + emailId
@@ -30,6 +35,17 @@ func GetEmail(client *core.PC_Client, emailId string) (core.EmailRoot, error) {
 
 }
 
+/*
+POST HTTP Method to create an email object.  On create, the email is automatically
+assigned to the person ID listed in the endpoint
+
+Assignable Attributes
+  - address
+  - location
+  - primary
+
+Endpoint = /people/v2/people/<people ID>/emails
+*/
 func CreateEmail(client *core.PC_Client, peopleId string, responseData *core.EmailRootNoRelationship) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/people/" + peopleId + "/emails"
 
@@ -57,6 +73,11 @@ func CreateEmail(client *core.PC_Client, peopleId string, responseData *core.Ema
 	return body, nil
 }
 
+/*
+Delete HTTP Method to remove an email.
+
+Endpoint = /people/v2/emails/<email ID>
+*/
 func DeleteEmail(client *core.PC_Client, emailId string) error {
 	endpoint := client.Endpoint + "people/v2/emails/" + emailId
 
@@ -75,19 +96,29 @@ func DeleteEmail(client *core.PC_Client, emailId string) error {
 
 }
 
+/*
+PATCH HTTP Method to update the email for a person.
+
+Assignable Attributes
+  - email
+  - location
+  - primary
+
+Endpoint = /people/v2/emails/<email ID>
+*/
 func UpdateEmail(client *core.PC_Client, emailId string, responseData *core.EmailRootNoRelationship) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/emails/" + emailId
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
 	if err != nil {
-		fmt.Println("Error marshalling JSON:", err)
+		return nil, fmt.Errorf("Error marshalling JSON: %w", err)
 	}
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("PATCH", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
-		fmt.Println("Error creating request:", err)
+		return nil, fmt.Errorf("Error creating request: %w", err)
 	}
 
 	// Set the content type to application/json

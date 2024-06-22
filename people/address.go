@@ -19,13 +19,13 @@ func GetAddress(client *core.PC_Client, addressId string) (core.AddressRoot, err
 	endpoint := client.Endpoint + "people/v2/addresses/" + addressId
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		fmt.Println("Error creating request:", err)
+		return core.AddressRoot{}, fmt.Errorf("Error creating GetAddress request: %w", err)
 	}
 
 	//Send the request
 	body, err := client.DoRequest(request)
 	if err != nil {
-		return core.AddressRoot{}, err
+		return core.AddressRoot{}, fmt.Errorf("Error executing GetAddress request: %w", err)
 	}
 
 	//Convert from json to the struct
@@ -61,13 +61,13 @@ func CreateAddress(client *core.PC_Client, peopleId string, responseData *core.A
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
 	if err != nil {
-		fmt.Println("Error marshalling JSON:", err)
+		return nil, fmt.Errorf("Error marshalling JSON: %w", err)
 	}
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
-		fmt.Println("Error creating request:", err)
+		return nil, fmt.Errorf("Error creating request: %w", err)
 	}
 
 	// Set the content type to application/json
@@ -76,8 +76,7 @@ func CreateAddress(client *core.PC_Client, peopleId string, responseData *core.A
 	// Make the request
 	body, err := client.DoRequest(request)
 	if err != nil {
-		fmt.Println(err)
-		return nil, err
+		return nil, fmt.Errorf("Error executing create request: %w", err)
 	}
 
 	return body, nil
@@ -99,7 +98,7 @@ func DeleteAddress(client *core.PC_Client, addressId string) error {
 
 	_, err = client.DoRequest(request)
 	if err != nil {
-		return err
+		return fmt.Errorf("Error executing delete request: %w", err)
 	}
 
 	return nil
@@ -126,13 +125,13 @@ func UpdateAddress(client *core.PC_Client, addressId string, responseData *core.
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
 	if err != nil {
-		fmt.Println("Error marshalling JSON:", err)
+		return nil, fmt.Errorf("Error marshalling JSON: %w", err)
 	}
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("PATCH", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
-		fmt.Println("Error creating request:", err)
+		return nil, fmt.Errorf("Error creating request: %w", err)
 	}
 
 	// Set the content type to application/json
@@ -141,8 +140,7 @@ func UpdateAddress(client *core.PC_Client, addressId string, responseData *core.
 	// Make the request
 	body, err := client.DoRequest(request)
 	if err != nil {
-		fmt.Println(err)
-		return nil, err
+		return nil, fmt.Errorf("Error executing update request: %w", err)
 	}
 
 	return body, nil

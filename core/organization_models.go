@@ -20,11 +20,11 @@ type OrganizationAttributes struct {
 	ContactWebsite string `json:"contact_website"`
 }
 
-type OrganizationRoot struct {
-	Data []Organization `json:"data"`
+type OrganizationRootAddress struct {
+	Data []OrganizationAddress `json:"data"`
 }
 
-type Organization struct {
+type OrganizationAddress struct {
 	Type          string                           `json:"type"`
 	ID            string                           `json:"id"`
 	Attributes    OrganizationAttributesAddress    `json:"attributes"`

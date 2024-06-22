@@ -19,7 +19,7 @@ func GetPhoneNumber(client *core.PC_Client, phoneNumberId string) (core.PhoneNum
 	endpoint := client.Endpoint + "people/v2/phone_numbers/" + phoneNumberId
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		fmt.Println("Error creating request:", err)
+		return core.PhoneNumberRootNoRelationship{}, fmt.Errorf("Error creating request: %w", err)
 	}
 
 	//Send the request
@@ -42,7 +42,11 @@ func GetPhoneNumber(client *core.PC_Client, phoneNumberId string) (core.PhoneNum
 /*
 POST HTTP Method to create a phone number object.
 
-- Requires the ID of the person the phone number is related to.
+Assignable Attributes
+  - number
+  - carrier
+  - location
+  - primary
 
 Endpoint = /people/v2/people/<person ID>/phone_numbers
 */
@@ -52,13 +56,13 @@ func CreatePhoneNumber(client *core.PC_Client, peopleId string, responseData *co
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
 	if err != nil {
-		fmt.Println("Error marshalling JSON:", err)
+		return nil, fmt.Errorf("Error marshalling JSON: %w", err)
 	}
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
-		fmt.Println("Error creating request:", err)
+		return nil, fmt.Errorf("Error creating request: %w", err)
 	}
 
 	// Set the content type to application/json
@@ -67,8 +71,7 @@ func CreatePhoneNumber(client *core.PC_Client, peopleId string, responseData *co
 	// Make the request
 	body, err := client.DoRequest(request)
 	if err != nil {
-		fmt.Println(err)
-		return nil, err
+		return nil, fmt.Errorf("Error executing create request: %w", err)
 	}
 
 	return body, nil
@@ -92,7 +95,7 @@ func DeletePhoneNumber(client *core.PC_Client, phoneNumberId string) error {
 
 	_, err = client.DoRequest(request)
 	if err != nil {
-		return err
+		return fmt.Errorf("Error executing delete request: %w", err)
 	}
 
 	return nil
@@ -101,7 +104,11 @@ func DeletePhoneNumber(client *core.PC_Client, phoneNumberId string) error {
 /*
 PATCH HTTP Method to update an phone number object.
 
-- Requires the Phone Number ID you want to update
+Assignable Attributes
+  - number
+  - carrier
+  - location
+  - primary
 
 Endpoint = /people/v2/phone_numbers/<Phone Number ID>
 */
@@ -111,13 +118,13 @@ func UpdatePhoneNumber(client *core.PC_Client, phoneNumberId string, responseDat
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
 	if err != nil {
-		fmt.Println("Error marshalling JSON:", err)
+		return nil, fmt.Errorf("Error marshalling JSON: %w", err)
 	}
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("PATCH", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
-		fmt.Println("Error creating request:", err)
+		return nil, fmt.Errorf("Error creating request: %w", err)
 	}
 
 	// Set the content type to application/json
@@ -126,8 +133,7 @@ func UpdatePhoneNumber(client *core.PC_Client, phoneNumberId string, responseDat
 	// Make the request
 	body, err := client.DoRequest(request)
 	if err != nil {
-		fmt.Println(err)
-		return nil, err
+		return nil, fmt.Errorf("Error executing update request: %w", err)
 	}
 
 	return body, nil
