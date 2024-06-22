@@ -44,4 +44,4 @@ If you have a problem or an idea for an enhancement, please create an issue and 
 
 ## TODO
 - [ ] Need to setup Mock API Responses so testing isn't dependent on a specific account
-- [ ] Implement Phone Numbers 
+- [x] Implement Phone Numbers 

@@ -12,11 +12,11 @@ import (
 /*
 GET HTTP Method to get all phone numbers for an Organization.
 
-Endpoint = /people/v2/phone_number
+Endpoint = /people/v2/phone_number/<phone number id>
 */
-func GetAllPhoneNumbers(client *core.PC_Client, addressId string) (core.PhoneNumberRoot, error) {
+func GetPhoneNumber(client *core.PC_Client, phoneNumberId string) (core.PhoneNumberRootNoRelationship, error) {
 	//Fetch the data
-	endpoint := client.Endpoint + "people/v2/phone_numbers"
+	endpoint := client.Endpoint + "people/v2/phone_numbers/" + phoneNumberId
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		fmt.Println("Error creating request:", err)
@@ -25,14 +25,14 @@ func GetAllPhoneNumbers(client *core.PC_Client, addressId string) (core.PhoneNum
 	//Send the request
 	body, err := client.DoRequest(request)
 	if err != nil {
-		return core.PhoneNumberRoot{}, err
+		return core.PhoneNumberRootNoRelationship{}, err
 	}
 
 	//Convert from json to the struct
-	var jsonBody core.PhoneNumberRoot
+	var jsonBody core.PhoneNumberRootNoRelationship
 	err = json.Unmarshal(body, &jsonBody)
 	if err != nil {
-		return core.PhoneNumberRoot{}, fmt.Errorf("Error unmarshalling during GetAllPhoneNumbers ::: %v\n", err)
+		return core.PhoneNumberRootNoRelationship{}, fmt.Errorf("Error unmarshalling during GetPhoneNumber ::: %v\n", err)
 	}
 
 	return jsonBody, nil
@@ -98,8 +98,15 @@ func DeletePhoneNumber(client *core.PC_Client, phoneNumberId string) error {
 	return nil
 }
 
-func UpdatePhoneNumber(client *core.PC_Client, addressId string, responseData *core.AddressRootNoRelationship) ([]byte, error) {
-	endpoint := client.Endpoint + "people/v2/addresses/" + addressId
+/*
+PATCH HTTP Method to update an phone number object.
+
+- Requires the Phone Number ID you want to update
+
+Endpoint = /people/v2/phone_numbers/<Phone Number ID>
+*/
+func UpdatePhoneNumber(client *core.PC_Client, phoneNumberId string, responseData *core.PhoneNumberRootNoRelationship) ([]byte, error) {
+	endpoint := client.Endpoint + "people/v2/phone_numbers/" + phoneNumberId
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)

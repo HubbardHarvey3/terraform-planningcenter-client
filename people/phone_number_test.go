@@ -3,6 +3,7 @@ package people
 import (
 	"encoding/json"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
@@ -83,20 +84,20 @@ func TestCreatePhoneNumber(t *testing.T) {
 		t.Error(err)
 	}
 
-	addressBytes, err := CreatePhoneNumber(client, personIdPhoneNumber, &dataPhoneNumber)
+	phoneNumberBytes, err := CreatePhoneNumber(client, personIdPhoneNumber, &dataPhoneNumber)
 
-	var address core.PhoneNumberRootNoRelationship
-	json.Unmarshal(addressBytes, &address)
-	addressId = address.Data.ID
+	var phoneNumber core.PhoneNumberRootNoRelationship
+	json.Unmarshal(phoneNumberBytes, &phoneNumber)
+	phoneNumberId = phoneNumber.Data.ID
 
-	if address.Data.Attributes.Location != "Mobile" {
-		t.Errorf("Location is not 'Mobile', but is showing as : %v", address.Data.Attributes.Location)
+	if phoneNumber.Data.Attributes.Location != "Mobile" {
+		t.Errorf("Location is not 'Mobile', but is showing as : %v", phoneNumber.Data.Attributes.Location)
 	}
 
 }
 
 func TestGetPhoneNumber(t *testing.T) {
-	var phoneNumber core.PhoneNumberRoot
+	var phoneNumber core.PhoneNumberRootNoRelationship
 
 	if appIdPhoneNumber == "" {
 		t.Errorf("Need Env Vars PC_APP_ID Set")
@@ -107,13 +108,13 @@ func TestGetPhoneNumber(t *testing.T) {
 	// Initialize your PC_Client with the mock server URL
 	client := core.NewPCClient(appIdPhoneNumber, secretTokenPhoneNumber)
 
-	phoneNumber, err := GetAllPhoneNumbers(client, phoneNumberId)
+	phoneNumber, err := GetPhoneNumber(client, phoneNumberId)
 	if err != nil {
 		t.Errorf("GetphoneNumber failed with an error ::: %v\n", err)
 	}
 
-	if phoneNumber.Data[0].Attributes.Number != "(555) 555-5555" {
-		t.Errorf("phoneNumber is not '(555) 555-5555', but is showing as : %v", phoneNumber.Data[0].Attributes.Number)
+	if phoneNumber.Data.Attributes.Number != "(123) 888-9999" {
+		t.Errorf("phoneNumber is not '(123) 888-9999', but is showing as : %v", phoneNumber.Data.Attributes.Number)
 	}
 }
 
@@ -126,33 +127,33 @@ For now, I am copying the attributes from the Root struct to the RootNoRelations
 TODO - Fix Email Updates and create test
 */
 func TestUpdatePhoneNumber(t *testing.T) {
-	var address core.AddressRoot
+	var phoneNumber core.PhoneNumberRootNoRelationship
 
-	if appIdAddress == "" {
+	if appIdPhoneNumber == "" {
 		t.Errorf("Need Env Vars PC_APP_ID Set")
 	}
-	if secretTokenAddress == "" {
+	if secretTokenPhoneNumber == "" {
 		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
 	}
 	// Initialize your PC_Client with the mock server URL
-	client := core.NewPCClient(appIdAddress, secretTokenAddress)
+	client := core.NewPCClient(appIdPhoneNumber, secretTokenPhoneNumber)
 
-	address, err := GetAddress(client, addressId)
+	phoneNumber, err := GetPhoneNumber(client, phoneNumberId)
 	if err != nil {
-		t.Errorf("GetAddress failed with an error ::: %v\n", err)
+		t.Errorf("GetPhoneNumber failed with an error ::: %v\n", err)
 	}
 
-	address.Data.Attributes.City = "Updated"
+	phoneNumber.Data.Attributes.Location = "Home"
 	// Alter to without Relationships .... TODO Make this better
-	var updatedAddress core.AddressRootNoRelationship
-	updatedAddress.Data.Attributes = address.Data.Attributes
+	var updatedPhoneNumber core.PhoneNumberRootNoRelationship
+	updatedPhoneNumber.Data.Attributes = phoneNumber.Data.Attributes
 
-	response, err := UpdateAddress(client, addressId, &updatedAddress)
+	response, err := UpdatePhoneNumber(client, phoneNumberId, &updatedPhoneNumber)
 
-	json.Unmarshal(response, &updatedAddress)
+	json.Unmarshal(response, &updatedPhoneNumber)
 
-	if updatedAddress.Data.Attributes.City != "Updated" {
-		t.Errorf("Address is not 'Updated', but is showing as : %v", updatedAddress.Data.Attributes.City)
+	if updatedPhoneNumber.Data.Attributes.Location != "Home" {
+		t.Errorf("Address is not 'Updated', but is showing as : %v", updatedPhoneNumber.Data.Attributes.Location)
 	}
 
 }
@@ -172,12 +173,10 @@ func TestDeletePhoneNumber(t *testing.T) {
 		t.Errorf("Error during DeletePhoneNumber : %v\n", err)
 	}
 
-	// GetAllPhoneNumbers can't take a phone number ID, need to figure out a different way of testing a deleted number is gone
-	// until this is resolved, you will need to confirm the phone number is gone before you delete the person...yuck
-	//	_, err = GetAllPhoneNumbers(client, personIdPhoneNumber)
-	//	if !strings.Contains(err.Error(), "404") {
-	//		t.Errorf("GetPhoneNumber should be throwing a 404 after the person was deleted.  Error was %v", err)
-	//	}
+	_, err = GetPhoneNumber(client, personIdPhoneNumber)
+	if !strings.Contains(err.Error(), "404") {
+		t.Errorf("GetPhoneNumber should be throwing a 404 after the person was deleted.  Error was %v", err)
+	}
 
 	err = DeletePeople(client, personIdPhoneNumber)
 	if err != nil {
