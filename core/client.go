@@ -31,12 +31,12 @@ func (c *PC_Client) DoRequest(req *http.Request) ([]byte, error) {
 
 	response, err := c.Client.Do(req)
 	if err != nil {
-		fmt.Println("Error: ", err)
+		return nil, fmt.Errorf("Error during Client.Do: %w", err)
 	}
 
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println("Error: ", err)
+		return nil, fmt.Errorf("Error during Client.Do: %w", err)
 	}
 	defer response.Body.Close()
 

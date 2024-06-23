@@ -30,8 +30,6 @@ func GetCampus(client *core.PC_Client, campusId string) (core.CampusRoot, error)
 
 	//Convert from json to the struct
 	var jsonBody core.CampusRoot
-	fmt.Println("*******Get Result")
-	fmt.Println(string(body))
 	err = json.Unmarshal(body, &jsonBody)
 	if err != nil {
 		return core.CampusRoot{}, fmt.Errorf("Error unmarshalling during Getcampus ::: %v\n", err)
@@ -71,7 +69,6 @@ func CreateCampus(client *core.PC_Client, responseData *core.CampusRoot) ([]byte
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
-	fmt.Println(string(jsonData))
 	if err != nil {
 		return nil, fmt.Errorf("Error marshalling JSON: %w", err)
 	}
