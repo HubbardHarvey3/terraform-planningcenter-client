@@ -14,25 +14,25 @@ GET HTTP Method to get all phone numbers for an Organization.
 
 Endpoint = /people/v2/phone_number/<phone number id>
 */
-func GetPhoneNumber(client *core.PC_Client, phoneNumberId string) (core.PhoneNumberRootNoRelationship, error) {
+func GetPhoneNumber(client *core.PC_Client, phoneNumberId string) (core.PhoneNumberRoot, error) {
 	//Fetch the data
 	endpoint := client.Endpoint + "people/v2/phone_numbers/" + phoneNumberId
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return core.PhoneNumberRootNoRelationship{}, fmt.Errorf("Error creating request: %w", err)
+		return core.PhoneNumberRoot{}, fmt.Errorf("Error creating request: %w", err)
 	}
 
 	//Send the request
 	body, err := client.DoRequest(request)
 	if err != nil {
-		return core.PhoneNumberRootNoRelationship{}, err
+		return core.PhoneNumberRoot{}, err
 	}
 
 	//Convert from json to the struct
-	var jsonBody core.PhoneNumberRootNoRelationship
+	var jsonBody core.PhoneNumberRoot
 	err = json.Unmarshal(body, &jsonBody)
 	if err != nil {
-		return core.PhoneNumberRootNoRelationship{}, fmt.Errorf("Error unmarshalling during GetPhoneNumber ::: %v\n", err)
+		return core.PhoneNumberRoot{}, fmt.Errorf("Error unmarshalling during GetPhoneNumber ::: %v\n", err)
 	}
 
 	return jsonBody, nil
@@ -50,7 +50,7 @@ Assignable Attributes
 
 Endpoint = /people/v2/people/<person ID>/phone_numbers
 */
-func CreatePhoneNumber(client *core.PC_Client, peopleId string, responseData *core.PhoneNumberRootNoRelationship) ([]byte, error) {
+func CreatePhoneNumber(client *core.PC_Client, peopleId string, responseData *core.PhoneNumberRoot) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/people/" + peopleId + "/phone_numbers"
 
 	// Convert struct to JSON
@@ -58,6 +58,9 @@ func CreatePhoneNumber(client *core.PC_Client, peopleId string, responseData *co
 	if err != nil {
 		return nil, fmt.Errorf("Error marshalling JSON: %w", err)
 	}
+
+	// Make relationships nil so it isn't in the API payload
+	responseData.Data.Relationships = nil
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
@@ -112,7 +115,7 @@ Assignable Attributes
 
 Endpoint = /people/v2/phone_numbers/<Phone Number ID>
 */
-func UpdatePhoneNumber(client *core.PC_Client, phoneNumberId string, responseData *core.PhoneNumberRootNoRelationship) ([]byte, error) {
+func UpdatePhoneNumber(client *core.PC_Client, phoneNumberId string, responseData *core.PhoneNumberRoot) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/phone_numbers/" + phoneNumberId
 
 	// Convert struct to JSON

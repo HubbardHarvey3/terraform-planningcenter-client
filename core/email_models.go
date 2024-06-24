@@ -2,25 +2,15 @@ package core
 
 // ************ Email ************
 
-type EmailRootNoRelationship struct {
-	Data EmailNoRelationship `json:"data,omitempty"`
-}
-
-type EmailNoRelationship struct {
-	Type       string          `json:"type"`
-	ID         string          `json:"id"`
-	Attributes EmailAttributes `json:"attributes"`
-}
-
 type EmailRoot struct {
 	Data Email `json:"data,omitempty"`
 }
 
 type Email struct {
-	Type          string             `json:"type"`
-	ID            string             `json:"id"`
-	Attributes    EmailAttributes    `json:"attributes"`
-	Relationships EmailRelationships `json:"relationships,omitempty"`
+	Type          string              `json:"type"`
+	ID            string              `json:"id"`
+	Attributes    EmailAttributes     `json:"attributes"`
+	Relationships *EmailRelationships `json:"relationships,omitempty"`
 }
 
 type EmailAttributes struct {

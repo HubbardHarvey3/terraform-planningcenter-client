@@ -73,6 +73,9 @@ func CreateCampus(client *core.PC_Client, responseData *core.CampusRoot) ([]byte
 		return nil, fmt.Errorf("Error marshalling JSON: %w", err)
 	}
 
+	// Make relationships nil so it isn't in the API payload
+	responseData.Data.Relationships = nil
+
 	// Create a request with the JSON data
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {

@@ -37,7 +37,8 @@ func GetEmail(client *core.PC_Client, emailId string) (core.EmailRoot, error) {
 
 /*
 POST HTTP Method to create an email object.  On create, the email is automatically
-assigned to the person ID listed in the endpoint
+assigned to the person ID listed in the endpoint.  If you include an empty Relationship
+field, the api will return a 422 error.
 
 Assignable Attributes
   - address
@@ -46,7 +47,7 @@ Assignable Attributes
 
 Endpoint = /people/v2/people/<people ID>/emails
 */
-func CreateEmail(client *core.PC_Client, peopleId string, responseData *core.EmailRootNoRelationship) ([]byte, error) {
+func CreateEmail(client *core.PC_Client, peopleId string, responseData *core.EmailRoot) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/people/" + peopleId + "/emails"
 
 	// Convert struct to JSON
@@ -54,6 +55,9 @@ func CreateEmail(client *core.PC_Client, peopleId string, responseData *core.Ema
 	if err != nil {
 		return nil, fmt.Errorf("Error marshalling JSON: %w", err)
 	}
+
+	// Make relationships nil so it isn't in the API payload
+	responseData.Data.Relationships = nil
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
@@ -106,7 +110,7 @@ Assignable Attributes
 
 Endpoint = /people/v2/emails/<email ID>
 */
-func UpdateEmail(client *core.PC_Client, emailId string, responseData *core.EmailRootNoRelationship) ([]byte, error) {
+func UpdateEmail(client *core.PC_Client, emailId string, responseData *core.EmailRoot) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/emails/" + emailId
 
 	// Convert struct to JSON

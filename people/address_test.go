@@ -124,14 +124,6 @@ func TestGetAddress(t *testing.T) {
 	}
 }
 
-/*
-The Get request for an object returns the relationships listed in the json.
-Therefore, the struct that is used with GET requests, should have the relationships.
-For Updates, you get a 422 if you attempt to update using a json payload that contains relationships
-For now, I am copying the attributes from the Root struct to the RootNoRelationship model
-
-TODO - Fix Email Updates and create test
-*/
 func TestUpdateAddress(t *testing.T) {
 	var address core.AddressRoot
 

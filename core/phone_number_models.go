@@ -2,25 +2,15 @@ package core
 
 // ************ PhoneNumber ************
 
-type PhoneNumberRootNoRelationship struct {
-	Data PhoneNumberNoRelationship `json:"data,omitempty"`
-}
-
-type PhoneNumberNoRelationship struct {
-	Type       string                `json:"type"`
-	ID         string                `json:"id"`
-	Attributes PhoneNumberAttributes `json:"attributes"`
-}
-
 type PhoneNumberRoot struct {
-	Data []PhoneNumber `json:"data,omitempty"`
+	Data PhoneNumber `json:"data,omitempty"`
 }
 
 type PhoneNumber struct {
-	Type          string                   `json:"type"`
-	ID            string                   `json:"id"`
-	Attributes    PhoneNumberAttributes    `json:"attributes"`
-	Relationships PhoneNumberRelationships `json:"relationships,omitempty"`
+	Type          string                    `json:"type"`
+	ID            string                    `json:"id"`
+	Attributes    PhoneNumberAttributes     `json:"attributes"`
+	Relationships *PhoneNumberRelationships `json:"relationships,omitempty"`
 }
 
 type PhoneNumberAttributes struct {

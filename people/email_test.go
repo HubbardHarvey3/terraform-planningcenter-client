@@ -51,7 +51,7 @@ var secretTokenEmail = os.Getenv("PC_SECRET_TOKEN")
 
 func TestCreateEmail(t *testing.T) {
 	var dataPerson core.PeopleRoot
-	var dataEmail core.EmailRootNoRelationship
+	var dataEmail core.EmailRoot
 
 	if appIdEmail == "" {
 		t.Errorf("Need Env Vars PC_APP_ID Set")
@@ -88,7 +88,7 @@ func TestCreateEmail(t *testing.T) {
 		t.Error(err)
 	}
 
-	var email core.EmailRootNoRelationship
+	var email core.EmailRoot
 	json.Unmarshal(emailBytes, &email)
 	emailId = email.Data.ID
 
@@ -120,14 +120,6 @@ func TestGetEmail(t *testing.T) {
 	}
 }
 
-/*
-The Get request for an object returns the relationships listed in the json.
-Therefore, the struct that is used with GET requests, should have the relationships.
-For Updates, you get a 422 if you attempt to update using a json payload that contains relationships
-For now, I am copying the attributes from the Root struct to the RootNoRelationship model
-
-TODO - Fix Email Updates and create test
-*/
 func TestUpdateEmail(t *testing.T) {
 	var email core.EmailRoot
 
@@ -147,8 +139,8 @@ func TestUpdateEmail(t *testing.T) {
 
 	email.Data.Attributes.Address = "john.doe.updated@gmail.com"
 
-	// Convert EmailRoot to EmailRootNoRelationships
-	var updatedEmail core.EmailRootNoRelationship
+	// Convert EmailRoot to EmailRoots
+	var updatedEmail core.EmailRoot
 	updatedEmail.Data.Attributes = email.Data.Attributes
 
 	response, err := UpdateEmail(client, emailId, &updatedEmail)

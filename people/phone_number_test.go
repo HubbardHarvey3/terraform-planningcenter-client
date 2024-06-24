@@ -52,7 +52,7 @@ var secretTokenPhoneNumber = os.Getenv("PC_SECRET_TOKEN")
 
 func TestCreatePhoneNumber(t *testing.T) {
 	var dataPerson core.PeopleRoot
-	var dataPhoneNumber core.PhoneNumberRootNoRelationship
+	var dataPhoneNumber core.PhoneNumberRoot
 
 	if appIdPhoneNumber == "" {
 		t.Errorf("Need Env Vars PC_APP_ID Set")
@@ -86,7 +86,7 @@ func TestCreatePhoneNumber(t *testing.T) {
 
 	phoneNumberBytes, err := CreatePhoneNumber(client, personIdPhoneNumber, &dataPhoneNumber)
 
-	var phoneNumber core.PhoneNumberRootNoRelationship
+	var phoneNumber core.PhoneNumberRoot
 	json.Unmarshal(phoneNumberBytes, &phoneNumber)
 	phoneNumberId = phoneNumber.Data.ID
 
@@ -97,7 +97,7 @@ func TestCreatePhoneNumber(t *testing.T) {
 }
 
 func TestGetPhoneNumber(t *testing.T) {
-	var phoneNumber core.PhoneNumberRootNoRelationship
+	var phoneNumber core.PhoneNumberRoot
 
 	if appIdPhoneNumber == "" {
 		t.Errorf("Need Env Vars PC_APP_ID Set")
@@ -118,16 +118,8 @@ func TestGetPhoneNumber(t *testing.T) {
 	}
 }
 
-/*
-The Get request for an object returns the relationships listed in the json.
-Therefore, the struct that is used with GET requests, should have the relationships.
-For Updates, you get a 422 if you attempt to update using a json payload that contains relationships
-For now, I am copying the attributes from the Root struct to the RootNoRelationship model
-
-TODO - Fix Email Updates and create test
-*/
 func TestUpdatePhoneNumber(t *testing.T) {
-	var phoneNumber core.PhoneNumberRootNoRelationship
+	var phoneNumber core.PhoneNumberRoot
 
 	if appIdPhoneNumber == "" {
 		t.Errorf("Need Env Vars PC_APP_ID Set")
@@ -145,7 +137,7 @@ func TestUpdatePhoneNumber(t *testing.T) {
 
 	phoneNumber.Data.Attributes.Location = "Home"
 	// Alter to without Relationships .... TODO Make this better
-	var updatedPhoneNumber core.PhoneNumberRootNoRelationship
+	var updatedPhoneNumber core.PhoneNumberRoot
 	updatedPhoneNumber.Data.Attributes = phoneNumber.Data.Attributes
 
 	response, err := UpdatePhoneNumber(client, phoneNumberId, &updatedPhoneNumber)
