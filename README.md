@@ -42,6 +42,3 @@ Contributions are welcome.  However, this is a hobby project and I am unable to 
 If you have a problem or an idea for an enhancement, please create an issue and I will tackle it as soon as possible.
 
 
-## TODO
-- [ ] Need to setup Mock API Responses so testing isn't dependent on a specific account
-- [x] Implement Phone Numbers 

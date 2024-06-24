@@ -1,15 +1,15 @@
 package core
 
 // ************ Address ************
-
-type AddressRootNoRelationship struct {
-	Data AddressNoRelationship `json:"data"`
+type AddressRoot struct {
+	Data Address `json:"data,omitempty"`
 }
 
-type AddressNoRelationship struct {
-	Type       string            `json:"type"`
-	ID         string            `json:"id"`
-	Attributes AddressAttributes `json:"attributes"`
+type Address struct {
+	Type          string                `json:"type"`
+	ID            string                `json:"id"`
+	Attributes    AddressAttributes     `json:"attributes"`
+	Relationships *AddressRelationships `json:"relationships,omitempty"`
 }
 
 type AddressAttributes struct {
@@ -21,17 +21,6 @@ type AddressAttributes struct {
 	Primary     bool   `json:"primary"`
 	StreetLine1 string `json:"street_line_1"`
 	StreetLine2 string `json:"street_line_2"`
-}
-
-type AddressRoot struct {
-	Data Address `json:"data,omitempty"`
-}
-
-type Address struct {
-	Type          string               `json:"type"`
-	ID            string               `json:"id"`
-	Attributes    AddressAttributes    `json:"attributes"`
-	Relationships AddressRelationships `json:"relationships,omitempty"`
 }
 
 type AddressRelationships struct {

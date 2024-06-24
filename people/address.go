@@ -55,8 +55,11 @@ Assignable Attributes
 
 Endpoint = /people/v2/people/<people ID>/addresses
 */
-func CreateAddress(client *core.PC_Client, peopleId string, responseData *core.AddressRootNoRelationship) ([]byte, error) {
+func CreateAddress(client *core.PC_Client, peopleId string, responseData *core.AddressRoot) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/people/" + peopleId + "/addresses"
+
+	// Make relationships nil so it isn't in the API payload
+	responseData.Data.Relationships = nil
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
@@ -119,7 +122,7 @@ Assignable Attributes
 
 Endpoint = /people/v2/addresses/<address ID>
 */
-func UpdateAddress(client *core.PC_Client, addressId string, responseData *core.AddressRootNoRelationship) ([]byte, error) {
+func UpdateAddress(client *core.PC_Client, addressId string, responseData *core.AddressRoot) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/addresses/" + addressId
 
 	// Convert struct to JSON

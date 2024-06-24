@@ -55,7 +55,7 @@ var secretTokenAddress = os.Getenv("PC_SECRET_TOKEN")
 
 func TestCreateAddress(t *testing.T) {
 	var dataPerson core.PeopleRoot
-	var dataAddress core.AddressRootNoRelationship
+	var dataAddress core.AddressRoot
 
 	if appIdAddress == "" {
 		t.Errorf("Need Env Vars PC_APP_ID Set")
@@ -89,8 +89,11 @@ func TestCreateAddress(t *testing.T) {
 
 	addressBytes, err := CreateAddress(client, personIdAddress, &dataAddress)
 
-	var address core.AddressRootNoRelationship
-	json.Unmarshal(addressBytes, &address)
+	var address core.AddressRoot
+	err = json.Unmarshal(addressBytes, &address)
+	if err != nil {
+		t.Errorf("Error unmarshalling addressBytes")
+	}
 	addressId = address.Data.ID
 
 	if address.Data.Attributes.CountryCode != "US" {
@@ -148,7 +151,7 @@ func TestUpdateAddress(t *testing.T) {
 
 	address.Data.Attributes.City = "Updated"
 	// Alter to without Relationships .... TODO Make this better
-	var updatedAddress core.AddressRootNoRelationship
+	var updatedAddress core.AddressRoot
 	updatedAddress.Data.Attributes = address.Data.Attributes
 
 	response, err := UpdateAddress(client, addressId, &updatedAddress)
