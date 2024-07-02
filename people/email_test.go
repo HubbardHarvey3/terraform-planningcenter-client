@@ -9,7 +9,7 @@ import (
 	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
 )
 
-var responsePerson = `{
+var responsePersonEmail = `{
 	"data": {
 		"type": "person",
 		"attributes": {
@@ -61,7 +61,7 @@ func TestCreateEmail(t *testing.T) {
 	}
 
 	//Convert json into core.PeopleRoot
-	err := json.Unmarshal([]byte(responseJSON), &dataPerson)
+	err := json.Unmarshal([]byte(responsePersonEmail), &dataPerson)
 	if err != nil {
 		t.Error(err)
 	}
