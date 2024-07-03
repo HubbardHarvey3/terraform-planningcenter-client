@@ -37,11 +37,11 @@ var responseNote = `{
 	"data": {
 		"type": "Note",
 		"attributes": {
-			"note": "Test note from the api"
+			"note": "Test note from the api",
+			"note_category_id": "221326"
 		}
 	} 
-}
-`
+}`
 
 var noteId string
 var appIdNote = os.Getenv("PC_APP_ID")
@@ -51,10 +51,10 @@ func TestCreateNote(t *testing.T) {
 	var dataPerson core.PeopleRoot
 	var dataNote core.NoteRoot
 
-	if appIdEmail == "" {
+	if appIdNote == "" {
 		t.Errorf("Need Env Vars PC_APP_ID Set")
 	}
-	if secretTokenEmail == "" {
+	if secretTokenNote == "" {
 		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
 	}
 
@@ -105,7 +105,7 @@ func TestDeleteNote(t *testing.T) {
 		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
 	}
 
-	client := core.NewPCClient(appIdEmail, secretTokenEmail)
+	client := core.NewPCClient(appIdNote, secretTokenNote)
 
 	err := DeleteNote(client, noteId)
 	if err != nil {

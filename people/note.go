@@ -48,21 +48,19 @@ Assignable Attributes
   - created_at
   - updated_at
   - display_date
-  - note_category_id
+  - note_category_id *Required
 
 Endpoint = /people/v2/people/<person ID>/notes
 */
 func CreateNote(client *core.PC_Client, personId string, responseData *core.NoteRoot) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/people/" + personId + "/notes"
 
-	fmt.Println(endpoint)
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
 	if err != nil {
 		return nil, fmt.Errorf("Error marshalling JSON: %w", err)
 	}
 
-	fmt.Println(string(jsonData))
 	// Make relationships nil so it isn't in the API payload
 	responseData.Data.Relationships = nil
 

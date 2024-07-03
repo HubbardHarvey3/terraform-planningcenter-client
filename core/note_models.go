@@ -45,6 +45,6 @@ type NoteCreatedBy struct {
 }
 
 type NoteRelationshipData struct {
-	Type string `json:"person,omitempty"`
+	Type string `json:"type,omitempty"`
 	ID   string `json:"id,omitempty"`
 }
