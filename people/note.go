@@ -14,9 +14,9 @@ GET HTTP Method to get a note object.
 
 Endpoint = /people/v2/people/<person ID>
 */
-func GetNote(client *core.PC_Client, peopleId string) (core.NoteRoot, error) {
+func GetNote(client *core.PC_Client, noteId string) (core.NoteRoot, error) {
 	//Fetch the data
-	endpoint := client.Endpoint + "people/v2/notes/" + peopleId
+	endpoint := client.Endpoint + "people/v2/notes/" + noteId
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return core.NoteRoot{}, fmt.Errorf("Error creating get request: %w", err)

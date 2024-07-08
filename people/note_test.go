@@ -38,7 +38,7 @@ var responseNote = `{
 		"type": "Note",
 		"attributes": {
 			"note": "Test note from the api",
-			"note_category_id": "221326"
+			"note_category_id": 221326
 		}
 	} 
 }`
@@ -92,6 +92,29 @@ func TestCreateNote(t *testing.T) {
 
 	if note.Data.Attributes.Note != "Test note from the api" {
 		t.Errorf("Address is not 'Test note from the api', but is showing as : %v", note.Data.Attributes.Note)
+	}
+
+}
+
+func TestGetNote(t *testing.T) {
+	var note core.NoteRoot
+
+	if appIdNote == "" {
+		t.Errorf("Need Env Vars PC_APP_ID Set")
+	}
+	if secretTokenNote == "" {
+		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
+	}
+	// Initialize your PC_Client with the mock server URL
+	client := core.NewPCClient(appIdNote, secretTokenNote)
+
+	note, err := GetNote(client, noteId)
+	if err != nil {
+		t.Errorf("GetNote failed with an error ::: %v\n", err)
+	}
+
+	if note.Data.Attributes.Note != "Test note from the api" {
+		t.Errorf("Note is not 'Test note from the api', but is showing as : %v", note.Data.Attributes.Note)
 	}
 
 }
