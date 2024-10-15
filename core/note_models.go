@@ -18,7 +18,7 @@ type NoteAttributes struct {
 	CreatedAt      string `json:"created_at"`
 	UpdatedAt      string `json:"updated_at"`
 	DisplayDate    string `json:"display_date"`
-	NoteCategoryId string `json:"note_category_id"`
+	NoteCategoryId int    `json:"note_category_id"`
 }
 
 type NoteRelationships struct {
