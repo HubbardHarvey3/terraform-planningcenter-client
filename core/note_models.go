@@ -22,13 +22,13 @@ type NoteAttributes struct {
 }
 
 type NoteRelationships struct {
-	NoteCategory NoteCategory     `json:"note_category"`
-	Organization NoteOrganization `json:"organization"`
-	Person       NotePerson       `json:"person,omitempty"`
-	CreatedBy    NoteCreatedBy    `json:"created_by"`
+	NoteCategoryParent NoteCategoryParent `json:"note_category"`
+	Organization       NoteOrganization   `json:"organization"`
+	Person             NotePerson         `json:"person,omitempty"`
+	CreatedBy          NoteCreatedBy      `json:"created_by"`
 }
 
-type NoteCategory struct {
+type NoteCategoryParent struct {
 	Data NoteRelationshipData `json:"data,omitempty"`
 }
 
