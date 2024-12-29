@@ -35,9 +35,9 @@ var responsePersonNoteCategory = `{
 
 var responseNoteCategory = `{
 	"data": {
-		"type": "Note",
+		"type": "NoteCategory",
 		"attributes": {
-			"name": "Client Test Note Category"
+			"name": "ClientTestNoteCategory"
 		}
 	} 
 }`
@@ -48,7 +48,8 @@ var secretTokenNoteCategory = os.Getenv("PC_SECRET_TOKEN")
 
 func TestCreateNoteCategory(t *testing.T) {
 	var dataPerson core.PeopleRoot
-	var dataNote core.NoteRoot
+	var dataNote core.NoteCategoryRoot
+	dataNote.Data.Relationships = nil
 
 	if appIdNoteCategory == "" {
 		t.Errorf("Need Env Vars PC_APP_ID Set")
@@ -80,23 +81,23 @@ func TestCreateNoteCategory(t *testing.T) {
 		t.Error(err)
 	}
 
-	noteBytes, err := CreateNote(client, personId, &dataNote)
+	noteBytes, err := CreateNoteCategory(client, &dataNote)
 	if err != nil {
 		t.Error(err)
 	}
 
-	var note core.NoteRoot
+	var note core.NoteCategoryRoot
 	json.Unmarshal(noteBytes, &note)
 	noteCategoryId = note.Data.ID
 
-	if note.Data.Attributes.Note != "Test note from the api" {
-		t.Errorf("Address is not 'Test note from the api', but is showing as : %v", note.Data.Attributes.Note)
+	if note.Data.Attributes.Name != "ClientTestNoteCategory" {
+		t.Errorf("NoteCategory Name is not 'ClientTestNoteCategory', but is showing as : %v", note.Data.Attributes.Name)
 	}
 
 }
 
 func TestGetNoteCategory(t *testing.T) {
-	var note core.NoteRoot
+	var note core.NoteCategoryRoot
 
 	if appIdNoteCategory == "" {
 		t.Errorf("Need Env Vars PC_APP_ID Set")
@@ -107,13 +108,13 @@ func TestGetNoteCategory(t *testing.T) {
 	// Initialize your PC_Client with the mock server URL
 	client := core.NewPCClient(appIdNoteCategory, secretTokenNoteCategory)
 
-	note, err := GetNote(client, noteCategoryId)
+	note, err := GetNoteCategory(client, noteCategoryId)
 	if err != nil {
 		t.Errorf("GetNote failed with an error ::: %v\n", err)
 	}
 
-	if note.Data.Attributes.Note != "Test note from the api" {
-		t.Errorf("Note is not 'Test note from the api', but is showing as : %v", note.Data.Attributes.Note)
+	if note.Data.Attributes.Name != "ClientTestNoteCategory" {
+		t.Errorf("Note is not 'ClientTestNoteCategory', but is showing as : %v", note.Data.Attributes.Name)
 	}
 
 }
@@ -129,7 +130,7 @@ func TestDeleteNoteCategory(t *testing.T) {
 
 	client := core.NewPCClient(appIdNoteCategory, secretTokenNoteCategory)
 
-	err := DeleteNote(client, noteCategoryId)
+	err := DeleteNoteCategory(client, noteCategoryId)
 	if err != nil {
 		t.Errorf("Error during DeleteNote : %v\n", err)
 	}

@@ -16,7 +16,7 @@ Endpoint = /people/v2/note_categories
 */
 func GetNoteCategory(client *core.PC_Client, noteCategoryId string) (core.NoteCategoryRoot, error) {
 	//Fetch the data
-	endpoint := client.Endpoint + "people/v2/note_categories/"
+	endpoint := client.Endpoint + "people/v2/note_categories/" + noteCategoryId
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return core.NoteCategoryRoot{}, fmt.Errorf("Error creating get request: %w", err)
@@ -47,7 +47,7 @@ Assignable Attributes
 
 Endpoint = /people/v2/note_categories
 */
-func CreateNoteCategory(client *core.PC_Client, personId string, responseData *core.NoteCategoryRoot) ([]byte, error) {
+func CreateNoteCategory(client *core.PC_Client, responseData *core.NoteCategoryRoot) ([]byte, error) {
 	endpoint := client.Endpoint + "people/v2/note_categories"
 
 	// Convert struct to JSON
@@ -55,9 +55,6 @@ func CreateNoteCategory(client *core.PC_Client, personId string, responseData *c
 	if err != nil {
 		return nil, fmt.Errorf("Error marshalling JSON: %w", err)
 	}
-
-	// Make relationships nil so it isn't in the API payload
-	responseData.Data.Relationships = nil
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
@@ -71,7 +68,7 @@ func CreateNoteCategory(client *core.PC_Client, personId string, responseData *c
 	// Make the request
 	body, err := client.DoRequest(request)
 	if err != nil {
-		return nil, fmt.Errorf("Error executing create note request: %w", err)
+		return nil, fmt.Errorf("Error executing create note category request: %w", err)
 	}
 
 	return body, nil

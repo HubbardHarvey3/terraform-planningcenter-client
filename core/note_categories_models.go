@@ -14,33 +14,23 @@ type NoteCategory struct {
 }
 
 type NoteCategoryAttributes struct {
-	NoteCategory           string `json:"note"`
-	CreatedAt              string `json:"created_at"`
-	UpdatedAt              string `json:"updated_at"`
-	DisplayDate            string `json:"display_date"`
-	NoteCategoryCategoryId int    `json:"note_category_id"`
+	Name                   string `json:"name"`
+	CreatedAt              string `json:"created_at,omitempty"`
+	UpdatedAt              string `json:"updated_at,omitempty"`
+	Locked                 bool   `json:"locked,omitempty"`
+	NoteCategoryCategoryId int    `json:"note_category_id,omitempty"`
+	OrganizationId         int    `json:"organization_id,omitempty"`
 }
 
 type NoteCategoryRelationships struct {
-	NoteCategory NoteCategory             `json:"note_category"`
 	Organization NoteCategoryOrganization `json:"organization"`
-	Person       NoteCategoryPerson       `json:"person,omitempty"`
-	CreatedBy    NoteCategoryCreatedBy    `json:"created_by"`
 }
 
 type NoteCategoryOrganization struct {
-	Data NoteCategoryRelationshipData `json:"data,omitempty"`
+	Data NoteCategoryRelationshipOrganizationData `json:"data,omitempty"`
 }
 
-type NoteCategoryPerson struct {
-	Data NoteCategoryRelationshipData `json:"data,omitempty"`
-}
-
-type NoteCategoryCreatedBy struct {
-	Data NoteCategoryRelationshipData `json:"data,omitempty"`
-}
-
-type NoteCategoryRelationshipData struct {
+type NoteCategoryRelationshipOrganizationData struct {
 	Type string `json:"type,omitempty"`
 	ID   string `json:"id,omitempty"`
 }
