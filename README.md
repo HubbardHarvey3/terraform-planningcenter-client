@@ -39,6 +39,6 @@ The repo is licensed under Mozilla Public License Version 2.0.  For more informa
 ## Contributing
 
 Contributions are welcome.  However, this is a hobby project and I am unable to dedicate a lot of time to its maintenance.  
-If you have a problem or an idea for an enhancement, please create an issue and I will tackle it as soon as possible.
+If you have a problem or an idea for an enhancement, please create an issue.
 
 
