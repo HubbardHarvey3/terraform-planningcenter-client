@@ -14,14 +14,14 @@ type FormFields struct {
 }
 
 type FormFieldsAttributes struct {
-	Label       string `json:"label,omitempty"`
-	Description string `json:"description,omitempty"`
-	Required    bool   `json:"required,omitempty"`
-	Settings    string `json:"settings,omitempty"`
-	Field_type  string `json:"field_type,omitempty"`
-	Sequence    int    `json:"sequence,omitempty"`
-	CreatedAt   string `json:"created_at,omitempty"`
-	UpdatedAt   string `json:"updated_at,omitempty"`
+	Label       string      `json:"label,omitempty"`
+	Description string      `json:"description,omitempty"`
+	Required    bool        `json:"required,omitempty"`
+	Settings    interface{} `json:"settings,omitempty"`
+	Field_type  string      `json:"field_type,omitempty"`
+	Sequence    int         `json:"sequence,omitempty"`
+	CreatedAt   string      `json:"created_at,omitempty"`
+	UpdatedAt   string      `json:"updated_at,omitempty"`
 }
 
 type FormFieldsRelationships struct {
@@ -44,7 +44,7 @@ type FormFieldsRelationshipOptions struct {
 }
 
 type FormFieldsRelationshipFormFieldConditions struct {
-	Data FormFieldsRelationshipFormFieldConditionsData `json:"data,omitempty"`
+	Data []FormFieldsRelationshipFormFieldConditionsData `json:"data,omitempty"`
 }
 
 type FormFieldsRelationshipFormData struct {
