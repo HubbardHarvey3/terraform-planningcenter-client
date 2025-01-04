@@ -27,13 +27,12 @@ func GetFormField(client *core.PC_Client, formId string, formFieldId string) (co
 	if err != nil {
 		return core.FormFieldsRoot{}, fmt.Errorf("Error executing get request: %w", err)
 	}
-	fmt.Println(string(body))
 
 	//Convert from json to the struct
 	var jsonBody core.FormFieldsRoot
 	err = json.Unmarshal(body, &jsonBody)
 	if err != nil {
-		return core.FormFieldsRoot{}, fmt.Errorf("Error unmarshalling during GetNote ::: %v\n", err)
+		return core.FormFieldsRoot{}, fmt.Errorf("Error unmarshalling during GetFormField ::: %v\n", err)
 	}
 
 	return jsonBody, nil

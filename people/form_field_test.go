@@ -25,7 +25,7 @@ func TestGetFormField(t *testing.T) {
 
 	form, err := GetFormField(client, formId, "6830109")
 	if err != nil {
-		t.Errorf("GetNote failed with an error ::: %v\n", err)
+		t.Errorf("GetFormField failed with an error ::: %v\n", err)
 	}
 
 	if form.Data.Attributes.Label != "Phone number" {
