@@ -36,11 +36,11 @@ type FormFieldsRelationshipForm struct {
 }
 
 type FormFieldsRelationshipFieldable struct {
-	Data []FormFieldsRelationshipFieldableData `json:"data,omitempty"`
+	Data FormFieldsRelationshipFieldableData `json:"data,omitempty"`
 }
 
 type FormFieldsRelationshipOptions struct {
-	Data []FormFieldsRelationshipOptionsData `json:"data,omitempty"`
+	Data FormFieldsRelationshipOptionsData `json:"data,omitempty"`
 }
 
 type FormFieldsRelationshipFormFieldConditions struct {
