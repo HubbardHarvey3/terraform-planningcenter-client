@@ -16,7 +16,7 @@ Endpoint = /people/v2/addresses/<address ID>
 */
 func GetAddress(client *core.PC_Client, addressId string) (core.AddressRoot, error) {
 	//Fetch the data
-	endpoint := client.Endpoint + "people/v2/addresses/" + addressId
+	endpoint := client.Endpoint + "/people/v2/addresses/" + addressId
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return core.AddressRoot{}, fmt.Errorf("Error creating GetAddress request: %w", err)
@@ -56,7 +56,7 @@ Assignable Attributes
 Endpoint = /people/v2/people/<people ID>/addresses
 */
 func CreateAddress(client *core.PC_Client, peopleId string, responseData *core.AddressRoot) ([]byte, error) {
-	endpoint := client.Endpoint + "people/v2/people/" + peopleId + "/addresses"
+	endpoint := client.Endpoint + "/people/v2/people/" + peopleId + "/addresses"
 
 	// Make relationships nil so it isn't in the API payload
 	responseData.Data.Relationships = nil
@@ -91,7 +91,7 @@ Delete HTTP Method to remove an address.
 Endpoint = /people/v2/addresses/<address ID>
 */
 func DeleteAddress(client *core.PC_Client, addressId string) error {
-	endpoint := client.Endpoint + "people/v2/addresses/" + addressId
+	endpoint := client.Endpoint + "/people/v2/addresses/" + addressId
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("DELETE", endpoint, nil)
@@ -123,7 +123,7 @@ Assignable Attributes
 Endpoint = /people/v2/addresses/<address ID>
 */
 func UpdateAddress(client *core.PC_Client, addressId string, responseData *core.AddressRoot) ([]byte, error) {
-	endpoint := client.Endpoint + "people/v2/addresses/" + addressId
+	endpoint := client.Endpoint + "/people/v2/addresses/" + addressId
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)

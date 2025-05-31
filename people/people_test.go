@@ -2,55 +2,48 @@ package people
 
 import (
 	"encoding/json"
-	"os"
-	"strings"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
 )
 
-var responseJSON = `{
-	"data": {
-		"type": "person",
-		"attributes": {
-			"accounting_administrator": false,
-			"anniversary": null,
-			"birthdate": "1990-01-01",
-			"first_name": "UnitTest",
-			"gender": "male",
-			"given_name": null,
-			"grade": null,
-			"graduation_year": null,
-			"inactivated_at": null,
-			"last_name": "Doe",
-			"medical_notes": null,
-			"membership": "member",
-			"middle_name": null,
-			"nickname": null,
-			"site_administrator": false,
-			"status": "active"
+func TestCreatePerson(t *testing.T) {
+	mockResponse := `{
+		"data": {
+			"type": "person",
+			"id": "12345",
+			"attributes": {
+				"accounting_administrator": false,
+				"anniversary": null,
+				"birthdate": "1990-01-01",
+				"first_name": "UnitTest",
+				"gender": "male",
+				"given_name": null,
+				"grade": null,
+				"graduation_year": null,
+				"inactivated_at": null,
+				"last_name": "Doe",
+				"medical_notes": null,
+				"membership": "member",
+				"middle_name": null,
+				"nickname": null,
+				"site_administrator": false,
+				"status": "active"
+			}
 		}
-	}
-}`
+	}`
 
-var personId string
-var appId = os.Getenv("PC_APP_ID")
-var secretToken = os.Getenv("PC_SECRET_TOKEN")
+	mockServer := setupMockServer(mockResponse, http.StatusOK)
+	defer mockServer.Close()
 
-func TestCreatePeople(t *testing.T) {
 	var data core.PeopleRoot
 
-	if appId == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretToken == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
-
 	//Convert json into PeopleRoot
-	json.Unmarshal([]byte(responseJSON), &data)
+	json.Unmarshal([]byte(mockResponse), &data)
 
-	client := core.NewPCClient(appId, secretToken)
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
 
 	person, err := CreatePeople(client, &data)
 	if err != nil {
@@ -60,27 +53,46 @@ func TestCreatePeople(t *testing.T) {
 	var response core.PeopleRoot
 	json.Unmarshal(person, &response)
 
-	personId = response.Data.ID
 	if response.Data.Attributes.FirstName != "UnitTest" {
-		t.Errorf("Expected person.Data.ATtributes.FirstName to be UnitTest, instead got %v\n", response.Data.Attributes.FirstName)
+		t.Errorf("Expected person.Data.Attributes.FirstName to be UnitTest, instead got %v\n", response.Data.Attributes.FirstName)
 	}
 
 }
 
-func TestGetPeople(t *testing.T) {
+func TestGetPerson(t *testing.T) {
+	mockResponse := `{
+		"data": {
+			"type": "person",
+			"id": "12345",
+			"attributes": {
+				"accounting_administrator": false,
+				"anniversary": null,
+				"birthdate": "1990-01-01",
+				"first_name": "UnitTest",
+				"gender": "male",
+				"given_name": null,
+				"grade": null,
+				"graduation_year": null,
+				"inactivated_at": null,
+				"last_name": "Doe",
+				"medical_notes": null,
+				"membership": "member",
+				"middle_name": null,
+				"nickname": null,
+				"site_administrator": false,
+				"status": "active"
+			}
+		}
+	}`
 
-	if appId == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretToken == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
-	// Initialize your PC_Client with the mock server URL
-	client := core.NewPCClient(appId, secretToken)
+	var mockServer *httptest.Server = setupMockServer(mockResponse, http.StatusOK)
+	defer mockServer.Close()
 
-	person, err := GetPeople(client, personId)
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
+
+	person, err := GetPerson(client, "12345")
 	if err != nil {
-		t.Errorf("GetPeople failed with an error ::: %v\n", err)
+		t.Errorf("GetPerson failed with an error ::: %v\n", err)
 	}
 
 	if person.Data.Attributes.FirstName != "UnitTest" {
@@ -92,53 +104,60 @@ func TestGetPeople(t *testing.T) {
 	}
 }
 
-func TestUpdatePeople(t *testing.T) {
+func TestUpdatePerson(t *testing.T) {
+	mockResponse := `{
+		"data": {
+			"type": "person",
+			"id": "12345",
+			"attributes": {
+				"accounting_administrator": false,
+				"anniversary": null,
+				"birthdate": "1990-01-01",
+				"first_name": "UpdateName",
+				"gender": "male",
+				"given_name": null,
+				"grade": null,
+				"graduation_year": null,
+				"inactivated_at": null,
+				"last_name": "Doe",
+				"medical_notes": null,
+				"membership": "member",
+				"middle_name": null,
+				"nickname": null,
+				"site_administrator": false,
+				"status": "active"
+			}
+		}
+	}`
 	var person core.PeopleRoot
 
-	if appId == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretToken == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
-	// Initialize your PC_Client with the mock server URL
-	client := core.NewPCClient(appId, secretToken)
+	var mockServer *httptest.Server = setupMockServer(mockResponse, http.StatusOK)
 
-	person, err := GetPeople(client, personId)
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
+
+	response, err := UpdatePerson(client, "12345678", &person)
 	if err != nil {
-		t.Errorf("GetPeople failed with an error ::: %v\n", err)
+		t.Errorf("GetPerson failed with an error ::: %v\n", err)
 	}
 
-	person.Data.Attributes.FirstName = "UpdateName"
+	json.Unmarshal(response, &person)
 
-	var updatedPerson core.PeopleRoot
-	updatedPerson.Data.Attributes = person.Data.Attributes
-
-	response, err := UpdatePeople(client, emailId, &updatedPerson)
-
-	json.Unmarshal(response, &updatedPerson)
-
-	if updatedPerson.Data.Attributes.FirstName != "UpdateName" {
-		t.Errorf("email is not 'UpdatedName', but is showing as : %v", updatedPerson.Data.Attributes.FirstName)
+	if person.Data.Attributes.FirstName != "UpdateName" {
+		t.Errorf("First Name is not 'UpdateName', but is showing as : %v", person.Data.Attributes.FirstName)
 	}
 
 }
 
-func TestDeletePeople(t *testing.T) {
+func TestDeletePerson(t *testing.T) {
 
-	if appId == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
+	var mockServer *httptest.Server = setupMockServer("", http.StatusNoContent)
+
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
+
+	var response = DeletePerson(client, "12345")
+
+	if response != nil {
+		t.Errorf("DeletePerson returned something, but should be nil")
 	}
-	if secretToken == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
 
-	client := core.NewPCClient(appId, secretToken)
-
-	DeletePeople(client, personId)
-
-	_, err := GetPeople(client, personId)
-	if !strings.Contains(err.Error(), "404") {
-		t.Errorf("GetPeople should be throwing a 404 after the person was deleted")
-	}
 }

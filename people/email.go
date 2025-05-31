@@ -16,7 +16,7 @@ Endpoint = /people/v2/email/<email ID>
 */
 func GetEmail(client *core.PC_Client, emailId string) (core.EmailRoot, error) {
 	//Fetch the data
-	endpoint := client.Endpoint + "people/v2/emails/" + emailId
+	endpoint := client.Endpoint + "/people/v2/emails/" + emailId
 	request, err := http.NewRequest("GET", endpoint, nil)
 
 	// Make the request
@@ -48,7 +48,7 @@ Assignable Attributes
 Endpoint = /people/v2/people/<people ID>/emails
 */
 func CreateEmail(client *core.PC_Client, peopleId string, responseData *core.EmailRoot) ([]byte, error) {
-	endpoint := client.Endpoint + "people/v2/people/" + peopleId + "/emails"
+	endpoint := client.Endpoint + "/people/v2/people/" + peopleId + "/emails"
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
@@ -83,7 +83,7 @@ Delete HTTP Method to remove an email.
 Endpoint = /people/v2/emails/<email ID>
 */
 func DeleteEmail(client *core.PC_Client, emailId string) error {
-	endpoint := client.Endpoint + "people/v2/emails/" + emailId
+	endpoint := client.Endpoint + "/people/v2/emails/" + emailId
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("DELETE", endpoint, nil)
@@ -111,7 +111,7 @@ Assignable Attributes
 Endpoint = /people/v2/emails/<email ID>
 */
 func UpdateEmail(client *core.PC_Client, emailId string, responseData *core.EmailRoot) ([]byte, error) {
-	endpoint := client.Endpoint + "people/v2/emails/" + emailId
+	endpoint := client.Endpoint + "/people/v2/emails/" + emailId
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)

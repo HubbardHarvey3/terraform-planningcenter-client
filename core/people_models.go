@@ -38,7 +38,7 @@ type PersonAttributes struct {
 }
 
 type PersonRelationships struct {
-	PrimaryCampus PersonRelationshipsData `json:"primary_Campus"`
+	PrimaryCampus PersonRelationshipsData `json:"primary_campus"`
 	Gender        PersonRelationshipsData `json:"gender"`
 }
 

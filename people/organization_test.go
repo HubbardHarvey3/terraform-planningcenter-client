@@ -1,28 +1,37 @@
 package people
 
 import (
-	"os"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
 )
 
-var appIdOrganization = os.Getenv("PC_APP_ID")
-var secretTokenOrganization = os.Getenv("PC_SECRET_TOKEN")
-
 func TestGetOrganization(t *testing.T) {
-	if appIdOrganization == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretTokenOrganization == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
+	var orgResponse string = `{
+		"data": {
+		  "type": "Organization",
+		  "id": "1",
+		  "attributes": {
+			"name": "CBC",
+			"country_code": "US",
+			"date_format": 1,
+			"time_zone": "EST",
+			"contact_website": "cbc.example.com",
+			"created_at": "2000-01-01T12:00:00Z",
+			"avatar_url": "string"
+		  },
+		  "relationships": {}
+		}
+	}`
+	var mockServer *httptest.Server = setupMockServer(orgResponse, http.StatusOK)
 
-	client := core.NewPCClient(appIdOrganization, secretTokenOrganization)
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
 
 	org, err := GetOrganization(client)
 	if err != nil {
-		t.Errorf("GetPeople failed with an error ::: %v\n", err)
+		t.Errorf("GetPerson failed with an error ::: %v\n", err)
 	}
 
 	if org.Data.Attributes.Name != "CBC" {
@@ -32,18 +41,41 @@ func TestGetOrganization(t *testing.T) {
 }
 
 func TestGetOrganizationAddress(t *testing.T) {
-	if appIdOrganization == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretTokenOrganization == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
+	var orgResponse string = `{
+		"data": [{
+		  "type": "Address",
+		  "id": "1",
+		  "attributes": {
+			"city": "Hometown",
+			"state": "FL",
+			"zip": "333333",
+			"country_code": "US",
+			"location": "Here",
+			"primary": true,
+			"street_line_1": "1111 NW 41st BLVD",
+			"street_line_2": "",
+			"created_at": "2000-01-01T12:00:00Z",
+			"updated_at": "2000-01-01T12:00:00Z",
+			"country_name": "United States"
+		  },
+		  "relationships": {
+			"person": {
+			  "data": {
+				"type": "Person",
+				"id": "1"
+			  }
+			}
+		  }
+		}]
+	}`
 
-	client := core.NewPCClient(appIdOrganization, secretTokenOrganization)
+	var mockServer *httptest.Server = setupMockServer(orgResponse, http.StatusOK)
+
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
 
 	org, err := GetOrganizationAddress(client)
 	if err != nil {
-		t.Errorf("GetPeople failed with an error ::: %v\n", err)
+		t.Errorf("GetPerson failed with an error ::: %v\n", err)
 	}
 
 	if org.Data[0].Attributes.City != "Hometown" {

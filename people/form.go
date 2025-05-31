@@ -16,7 +16,7 @@ Endpoint = /people/v2/forms/<form id>
 */
 func GetForm(client *core.PC_Client, formId string) (core.FormRoot, error) {
 	//Fetch the data
-	endpoint := client.Endpoint + "people/v2/forms/" + formId
+	endpoint := client.Endpoint + "/people/v2/forms/" + formId
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return core.FormRoot{}, fmt.Errorf("Error creating get request: %w", err)

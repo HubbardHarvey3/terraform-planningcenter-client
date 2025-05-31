@@ -15,7 +15,7 @@ func TestPCClient_DoRequest(t *testing.T) {
 	secret_token := os.Getenv("PC_SECRET_TOKEN")
 
 	// Initialize your PC_Client with the mock server URL
-	client := NewPCClient(app_id, secret_token)
+	client := NewPCClient(app_id, secret_token, "")
 
 	req, err := http.NewRequest(http.MethodGet, URL, nil)
 	if err != nil {
