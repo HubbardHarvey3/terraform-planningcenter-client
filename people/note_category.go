@@ -16,7 +16,7 @@ Endpoint = /people/v2/note_categories
 */
 func GetNoteCategory(client *core.PC_Client, noteCategoryId string) (core.NoteCategoryRoot, error) {
 	//Fetch the data
-	endpoint := client.Endpoint + "people/v2/note_categories/" + noteCategoryId
+	endpoint := client.Endpoint + "/people/v2/note_categories/" + noteCategoryId
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return core.NoteCategoryRoot{}, fmt.Errorf("Error creating get request: %w", err)
@@ -48,7 +48,7 @@ Assignable Attributes
 Endpoint = /people/v2/note_categories
 */
 func CreateNoteCategory(client *core.PC_Client, responseData *core.NoteCategoryRoot) ([]byte, error) {
-	endpoint := client.Endpoint + "people/v2/note_categories"
+	endpoint := client.Endpoint + "/people/v2/note_categories"
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
@@ -82,7 +82,7 @@ Endpoint = /people/v2/note_categories/<note_categories ID>
 Warning: Deleting a Note Category will also delete all associated notes
 */
 func DeleteNoteCategory(client *core.PC_Client, noteCategoryId string) error {
-	endpoint := client.Endpoint + "people/v2/note_categories/" + noteCategoryId
+	endpoint := client.Endpoint + "/people/v2/note_categories/" + noteCategoryId
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("DELETE", endpoint, nil)
@@ -107,7 +107,7 @@ Assignable Attributes
 Endpoint = /people/v2/note_categories/<note_category id>
 */
 func UpdateNoteCategory(client *core.PC_Client, noteCategoryId string, responseData *core.NoteCategoryRoot) ([]byte, error) {
-	endpoint := client.Endpoint + "people/v2/note_categories/" + noteCategoryId
+	endpoint := client.Endpoint + "/people/v2/note_categories/" + noteCategoryId
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)

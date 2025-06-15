@@ -15,7 +15,7 @@ type OrganizationNoRelationship struct {
 type OrganizationAttributes struct {
 	Name           string `json:"name"`
 	CountryCode    string `json:"country_code"`
-	DateFormat     string `json:"date_format"`
+	DateFormat     int    `json:"date_format"`
 	TimeZone       string `json:"time_zone"`
 	ContactWebsite string `json:"contact_website"`
 }

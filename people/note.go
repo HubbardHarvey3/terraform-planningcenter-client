@@ -16,7 +16,7 @@ Endpoint = /people/v2/people/<person ID>
 */
 func GetNote(client *core.PC_Client, noteId string) (core.NoteRoot, error) {
 	//Fetch the data
-	endpoint := client.Endpoint + "people/v2/notes/" + noteId
+	endpoint := client.Endpoint + "/people/v2/notes/" + noteId
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return core.NoteRoot{}, fmt.Errorf("Error creating get request: %w", err)
@@ -53,7 +53,7 @@ Assignable Attributes
 Endpoint = /people/v2/people/<person ID>/notes
 */
 func CreateNote(client *core.PC_Client, personId string, responseData *core.NoteRoot) ([]byte, error) {
-	endpoint := client.Endpoint + "people/v2/people/" + personId + "/notes"
+	endpoint := client.Endpoint + "/people/v2/people/" + personId + "/notes"
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
@@ -88,7 +88,7 @@ Delete HTTP Method to remove a note.
 Endpoint = /people/v2/notes/<notes ID>
 */
 func DeleteNote(client *core.PC_Client, noteId string) error {
-	endpoint := client.Endpoint + "people/v2/notes/" + noteId
+	endpoint := client.Endpoint + "/people/v2/notes/" + noteId
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("DELETE", endpoint, nil)
@@ -118,7 +118,7 @@ Assignable Attributes
 Endpoint = /people/v2/notes/<note id>
 */
 func UpdateNote(client *core.PC_Client, noteId string, responseData *core.NoteRoot) ([]byte, error) {
-	endpoint := client.Endpoint + "people/v2/notes/" + noteId
+	endpoint := client.Endpoint + "/people/v2/notes/" + noteId
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)

@@ -16,7 +16,7 @@ Endpoint = /people/v2/phone_number/<phone number id>
 */
 func GetPhoneNumber(client *core.PC_Client, phoneNumberId string) (core.PhoneNumberRoot, error) {
 	//Fetch the data
-	endpoint := client.Endpoint + "people/v2/phone_numbers/" + phoneNumberId
+	endpoint := client.Endpoint + "/people/v2/phone_numbers/" + phoneNumberId
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return core.PhoneNumberRoot{}, fmt.Errorf("Error creating request: %w", err)
@@ -51,7 +51,7 @@ Assignable Attributes
 Endpoint = /people/v2/people/<person ID>/phone_numbers
 */
 func CreatePhoneNumber(client *core.PC_Client, peopleId string, responseData *core.PhoneNumberRoot) ([]byte, error) {
-	endpoint := client.Endpoint + "people/v2/people/" + peopleId + "/phone_numbers"
+	endpoint := client.Endpoint + "/people/v2/people/" + peopleId + "/phone_numbers"
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
@@ -88,7 +88,7 @@ Delete HTTP Method to remove an phone number object.
 Endpoint = /people/v2/phone_numbers/<Phone Number ID>
 */
 func DeletePhoneNumber(client *core.PC_Client, phoneNumberId string) error {
-	endpoint := client.Endpoint + "people/v2/phone_numbers/" + phoneNumberId
+	endpoint := client.Endpoint + "/people/v2/phone_numbers/" + phoneNumberId
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("DELETE", endpoint, nil)
@@ -116,7 +116,7 @@ Assignable Attributes
 Endpoint = /people/v2/phone_numbers/<Phone Number ID>
 */
 func UpdatePhoneNumber(client *core.PC_Client, phoneNumberId string, responseData *core.PhoneNumberRoot) ([]byte, error) {
-	endpoint := client.Endpoint + "people/v2/phone_numbers/" + phoneNumberId
+	endpoint := client.Endpoint + "/people/v2/phone_numbers/" + phoneNumberId
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)

@@ -1,29 +1,37 @@
 package people
 
 import (
-	"os"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
 )
 
-var formIdFormField string = "873385"
-var appIdFormField = os.Getenv("PC_APP_ID")
-var secretTokenFormField = os.Getenv("PC_SECRET_TOKEN")
-
 func TestGetFormField(t *testing.T) {
+	var formFieldResponse string = `{
+		"data": {
+			"type": "FormField",
+			"id": "6003884",
+			"attributes": {
+				"created_at": "2024-07-01T11:10:11Z",
+				"description": null,
+				"field_type": "string",
+				"label": "Phone number",
+				"required": true,
+				"sequence": 1,
+				"settings": {},
+				"updated_at": "2024-07-01T11:10:11Z"
+			}
+		}
+	}`
 	var form core.FormFieldsRoot
+	var mockServer *httptest.Server = setupMockServer(formFieldResponse, http.StatusOK)
 
-	if appIdForm == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretTokenForm == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
 	// Initialize your PC_Client with the mock server URL
-	client := core.NewPCClient(appIdForm, secretTokenForm)
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
 
-	form, err := GetFormField(client, formId, "6830109")
+	form, err := GetFormField(client, "873385", "6003884")
 	if err != nil {
 		t.Errorf("GetFormField failed with an error ::: %v\n", err)
 	}

@@ -2,93 +2,48 @@ package people
 
 import (
 	"encoding/json"
-	"os"
-	"strings"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
 )
 
-var responsePersonNote = `{
-	"data": {
-		"type": "person",
-		"attributes": {
-			"accounting_administrator": false,
-			"anniversary": null,
-			"birthdate": "1990-01-01",
-			"first_name": "UnitTestNote",
-			"gender": "male",
-			"given_name": null,
-			"grade": null,
-			"graduation_year": null,
-			"inactivated_at": null,
-			"last_name": "NoteDoe",
-			"medical_notes": null,
-			"membership": "member",
-			"middle_name": null,
-			"nickname": null,
-			"site_administrator": false,
-			"status": "active"
-		}
-	}
-}`
-
-var responseNote = `{
+var noteResponse = `{
 	"data": {
 		"type": "Note",
+		"id": "1",
 		"attributes": {
 			"note": "Test note from the api",
-			"note_category_id": 221326
+			"created_at": "2000-01-01T12:00:00Z",
+			"updated_at": "2000-01-01T12:00:00Z",
+			"display_date": "2000-01-01T12:00:00Z",
+			"note_category_id": 11,
+			"organization_id": "11111",
+			"person_id": "12345678"
 		}
-	} 
+	}
 }`
 
-var noteId string
-var appIdNote = os.Getenv("PC_APP_ID")
-var secretTokenNote = os.Getenv("PC_SECRET_TOKEN")
-
 func TestCreateNote(t *testing.T) {
-	var dataPerson core.PeopleRoot
 	var dataNote core.NoteRoot
 
-	if appIdNote == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretTokenNote == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
+	var mockServer *httptest.Server = setupMockServer(noteResponse, http.StatusOK)
 
-	//Convert json into core.PeopleRoot
-	err := json.Unmarshal([]byte(responsePersonNote), &dataPerson)
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
+
+	err := json.Unmarshal([]byte(noteResponse), &dataNote)
 	if err != nil {
 		t.Error(err)
 	}
 
-	client := core.NewPCClient(appIdNote, secretTokenNote)
-
-	person, err := CreatePeople(client, &dataPerson)
-	if err != nil {
-		t.Errorf("Error during CreatePeople :: %v\n", err)
-	}
-
-	var responsePerson core.PeopleRoot
-	json.Unmarshal(person, &responsePerson)
-
-	personId = responsePerson.Data.ID
-
-	err = json.Unmarshal([]byte(responseNote), &dataNote)
-	if err != nil {
-		t.Error(err)
-	}
-
-	noteBytes, err := CreateNote(client, personId, &dataNote)
+	noteBytes, err := CreateNote(client, "12345678", &dataNote)
 	if err != nil {
 		t.Error(err)
 	}
 
 	var note core.NoteRoot
 	json.Unmarshal(noteBytes, &note)
-	noteId = note.Data.ID
 
 	if note.Data.Attributes.Note != "Test note from the api" {
 		t.Errorf("Address is not 'Test note from the api', but is showing as : %v", note.Data.Attributes.Note)
@@ -99,16 +54,12 @@ func TestCreateNote(t *testing.T) {
 func TestGetNote(t *testing.T) {
 	var note core.NoteRoot
 
-	if appIdNote == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretTokenNote == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
-	// Initialize your PC_Client with the mock server URL
-	client := core.NewPCClient(appIdNote, secretTokenNote)
+	var mockServer *httptest.Server = setupMockServer(noteResponse, http.StatusOK)
 
-	note, err := GetNote(client, noteId)
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
+	// Initialize your PC_Client with the mock server URL
+
+	note, err := GetNote(client, "1")
 	if err != nil {
 		t.Errorf("GetNote failed with an error ::: %v\n", err)
 	}
@@ -121,27 +72,13 @@ func TestGetNote(t *testing.T) {
 
 func TestDeleteNote(t *testing.T) {
 
-	if appIdNote == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretTokenNote == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
+	var mockServer *httptest.Server = setupMockServer("", http.StatusNoContent)
+
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
+
+	response := DeleteNote(client, "1")
+	if response != nil {
+		t.Errorf("DeleteNote did not return 'nil'")
 	}
 
-	client := core.NewPCClient(appIdNote, secretTokenNote)
-
-	err := DeleteNote(client, noteId)
-	if err != nil {
-		t.Errorf("Error during DeleteNote : %v\n", err)
-	}
-
-	_, err = GetNote(client, noteId)
-	if !strings.Contains(err.Error(), "404") {
-		t.Errorf("GetNote should be throwing a 404 after the person was deleted")
-	}
-
-	err = DeletePeople(client, personId)
-	if err != nil {
-		t.Errorf("Failed cleaning up testing resource")
-	}
 }

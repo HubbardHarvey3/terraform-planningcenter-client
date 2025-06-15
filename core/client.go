@@ -6,8 +6,6 @@ import (
 	"net/http"
 )
 
-const hostURL = "https://api.planningcenteronline.com/"
-
 type PC_Client struct {
 	Client   *http.Client
 	Token    string
@@ -15,7 +13,10 @@ type PC_Client struct {
 	Endpoint string
 }
 
-func NewPCClient(appId, secretToken string) *PC_Client {
+func NewPCClient(appId, secretToken, hostURL string) *PC_Client {
+	if hostURL == "" {
+		hostURL = "https://api.planningcenteronline.com"
+	}
 	fmt.Println("Returning a new PCClient")
 	return &PC_Client{
 		Client:   &http.Client{},

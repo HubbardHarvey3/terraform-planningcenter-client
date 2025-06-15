@@ -2,95 +2,44 @@ package people
 
 import (
 	"encoding/json"
-	"os"
-	"strings"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
 )
 
-var responsePersonEmail = `{
-	"data": {
-		"type": "person",
-		"attributes": {
-			"accounting_administrator": false,
-			"anniversary": null,
-			"birthdate": "1990-01-01",
-			"first_name": "UnitTestEmail",
-			"gender": "male",
-			"given_name": null,
-			"grade": null,
-			"graduation_year": null,
-			"inactivated_at": null,
-			"last_name": "MailDoe",
-			"medical_notes": null,
-			"membership": "member",
-			"middle_name": null,
-			"nickname": null,
-			"site_administrator": false,
-			"status": "active"
-		}
-	}
-}`
-
-var responseEmail = `{
-	"data": {
-		"type": "Email",
-		"attributes": {
-			"address": "john.doe@gmail.com",
-			"location": "Home",
-			"primary": true
-		}
-	} 
-}
-`
-
-var emailId string
-var appIdEmail = os.Getenv("PC_APP_ID")
-var secretTokenEmail = os.Getenv("PC_SECRET_TOKEN")
-
 func TestCreateEmail(t *testing.T) {
-	var dataPerson core.PeopleRoot
+	var emailResponse = `{
+		"data": {
+			"type": "Email",
+			"attributes": {
+				"address": "john.doe@gmail.com",
+				"location": "Home",
+				"primary": true
+			}
+		} 
+	}`
+	var mockServer *httptest.Server = setupMockServer(emailResponse, http.StatusOK)
 	var dataEmail core.EmailRoot
 
-	if appIdEmail == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretTokenEmail == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
 
-	//Convert json into core.PeopleRoot
-	err := json.Unmarshal([]byte(responsePersonEmail), &dataPerson)
+	err := json.Unmarshal([]byte(emailResponse), &dataEmail)
 	if err != nil {
 		t.Error(err)
 	}
 
-	client := core.NewPCClient(appIdEmail, secretTokenEmail)
-
-	person, err := CreatePeople(client, &dataPerson)
-	if err != nil {
-		t.Errorf("Error during CreatePeople :: %v\n", err)
-	}
-
-	var responsePerson core.PeopleRoot
-	json.Unmarshal(person, &responsePerson)
-
-	personId = responsePerson.Data.ID
-
-	err = json.Unmarshal([]byte(responseEmail), &dataEmail)
-	if err != nil {
-		t.Error(err)
-	}
-
-	emailBytes, err := CreateEmail(client, personId, &dataEmail)
+	emailBytes, err := CreateEmail(client, "123456789", &dataEmail)
 	if err != nil {
 		t.Error(err)
 	}
 
 	var email core.EmailRoot
-	json.Unmarshal(emailBytes, &email)
-	emailId = email.Data.ID
+	err = json.Unmarshal(emailBytes, &email)
+	if err != nil {
+		t.Error(err)
+	}
 
 	if email.Data.Attributes.Address != "john.doe@gmail.com" {
 		t.Errorf("Address is not john.doe@gmail.com, but is showing as : %v", email.Data.Attributes.Address)
@@ -99,86 +48,121 @@ func TestCreateEmail(t *testing.T) {
 }
 
 func TestGetEmail(t *testing.T) {
+	var emailResponse = `{
+		"data": {
+			"type": "Email",
+			"id": "12345678",
+			"attributes": {
+			"address": "random@gmail.com",
+			"blocked": false,
+			"created_at": "2023-11-25T15:33:03Z",
+			"location": "Work",
+			"primary": true,
+			"updated_at": "2023-11-25T15:33:03Z"
+			},
+			"relationships": {
+			"person": {
+				"data": {
+				"type": "Person",
+				"id": "123456789"
+				}
+			}
+			},
+			"links": {
+			"person": "https://api.planningcenteronline.com/people/v2/people/138378248",
+			"self": "https://api.planningcenteronline.com/people/v2/emails/89020410"
+			}
+		},
+		"included": [],
+		"meta": {
+			"parent": {
+			"id": "458241",
+			"type": "Organization"
+			}
+		}
+	}`
 	var email core.EmailRoot
 
-	if appIdEmail == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretTokenEmail == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
+	var mockServer = setupMockServer(emailResponse, http.StatusOK)
 	// Initialize your PC_Client with the mock server URL
-	client := core.NewPCClient(appIdEmail, secretTokenEmail)
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
 
-	email, err := GetEmail(client, emailId)
+	email, err := GetEmail(client, "12345678")
 	if err != nil {
-		t.Errorf("GetPeople failed with an error ::: %v\n", err)
+		t.Errorf("GetPerson failed with an error ::: %v\n", err)
 	}
 
-	if email.Data.Attributes.Address != "john.doe@gmail.com" {
-		t.Errorf("Address is not john.doe@gmail.com, but is showing as : %v", email.Data.Attributes.Address)
+	if email.Data.Attributes.Address != "random@gmail.com" {
+		t.Errorf("Address is not random@gmail.com, but is showing as : %v", email.Data.Attributes.Address)
 	}
 }
 
 func TestUpdateEmail(t *testing.T) {
+	var emailResponse = `{
+		"data": {
+			"type": "Email",
+			"id": "12345678",
+			"attributes": {
+			"address": "john.doe.updated@gmail.com",
+			"blocked": false,
+			"created_at": "2023-11-25T15:33:03Z",
+			"location": "Work",
+			"primary": true,
+			"updated_at": "2023-11-25T15:33:03Z"
+			},
+			"relationships": {
+			"person": {
+				"data": {
+				"type": "Person",
+				"id": "123456789"
+				}
+			}
+			},
+			"links": {
+			"person": "https://api.planningcenteronline.com/people/v2/people/138378248",
+			"self": "https://api.planningcenteronline.com/people/v2/emails/89020410"
+			}
+		},
+		"included": [],
+		"meta": {
+			"parent": {
+			"id": "458241",
+			"type": "Organization"
+			}
+		}
+	}`
 	var email core.EmailRoot
 
-	if appIdEmail == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretTokenEmail == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
-	// Initialize your PC_Client with the mock server URL
-	client := core.NewPCClient(appIdEmail, secretTokenEmail)
+	var mockServer = setupMockServer(emailResponse, http.StatusOK)
 
-	email, err := GetEmail(client, emailId)
-	if err != nil {
-		t.Errorf("Getemail failed with an error ::: %v\n", err)
-	}
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
 
-	email.Data.Attributes.Address = "john.doe.updated@gmail.com"
-
-	// Convert EmailRoot to EmailRoots
-	var updatedEmail core.EmailRoot
-	updatedEmail.Data.Attributes = email.Data.Attributes
-
-	response, err := UpdateEmail(client, emailId, &updatedEmail)
+	response, err := UpdateEmail(client, "12345678", &email)
 	if err != nil {
 		t.Error(err)
 	}
 
-	json.Unmarshal(response, &updatedEmail)
+	err = json.Unmarshal(response, &email)
+	if err != nil {
+		t.Error(err)
+	}
 
-	if updatedEmail.Data.Attributes.Address != "john.doe.updated@gmail.com" {
-		t.Errorf("email is not 'john.doe.updated@gmail.com', but is showing as : %v", updatedEmail.Data.Attributes.Address)
+	if email.Data.Attributes.Address != "john.doe.updated@gmail.com" {
+		t.Errorf("email is not 'john.doe.updated@gmail.com', but is showing as : %v", email.Data.Attributes.Address)
 	}
 
 }
 
 func TestDeleteEmail(t *testing.T) {
 
-	if appIdEmail == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretTokenEmail == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
+	var mockServer = setupMockServer("", http.StatusNoContent)
+
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
+
+	response := DeleteEmail(client, "12345678")
+
+	if response != nil {
+		t.Errorf("DeletePerson returned something, but should be nil")
 	}
 
-	client := core.NewPCClient(appIdEmail, secretTokenEmail)
-
-	err := DeleteEmail(client, emailId)
-	if err != nil {
-		t.Errorf("Error during DeleteEmail : %v\n", err)
-	}
-
-	_, err = GetEmail(client, emailId)
-	if !strings.Contains(err.Error(), "404") {
-		t.Errorf("GetEmail should be throwing a 404 after the person was deleted")
-	}
-
-	err = DeletePeople(client, personId)
-	if err != nil {
-		t.Errorf("Failed cleaning up testing resource")
-	}
 }

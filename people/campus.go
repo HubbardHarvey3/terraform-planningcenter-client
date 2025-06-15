@@ -16,7 +16,7 @@ Endpoint = /people/v2/campuses/<campus ID>
 */
 func GetCampus(client *core.PC_Client, campusId string) (core.CampusRoot, error) {
 	//Fetch the data
-	endpoint := client.Endpoint + "people/v2/campuses/" + campusId
+	endpoint := client.Endpoint + "/people/v2/campuses/" + campusId
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return core.CampusRoot{}, fmt.Errorf("Error creating Getcampus request: %w", err)
@@ -65,7 +65,7 @@ Assignable Attributes
 Endpoint = /people/v2/campuses
 */
 func CreateCampus(client *core.PC_Client, responseData *core.CampusRoot) ([]byte, error) {
-	endpoint := client.Endpoint + "people/v2/campuses"
+	endpoint := client.Endpoint + "/people/v2/campuses"
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)
@@ -100,7 +100,7 @@ Delete HTTP Method to remove an campus.
 Endpoint = /people/v2/campuses/<campus ID>
 */
 func DeleteCampus(client *core.PC_Client, campusId string) error {
-	endpoint := client.Endpoint + "people/v2/campuses/" + campusId
+	endpoint := client.Endpoint + "/people/v2/campuses/" + campusId
 
 	// Create a request with the JSON data
 	request, err := http.NewRequest("DELETE", endpoint, nil)
@@ -141,7 +141,7 @@ Assignable Attributes
 Endpoint = /people/v2/campuses/<campus ID>
 */
 func UpdateCampus(client *core.PC_Client, campusId string, responseData *core.CampusRoot) ([]byte, error) {
-	endpoint := client.Endpoint + "people/v2/campus/" + campusId
+	endpoint := client.Endpoint + "/people/v2/campus/" + campusId
 
 	// Convert struct to JSON
 	jsonData, err := json.Marshal(responseData)

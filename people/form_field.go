@@ -16,7 +16,7 @@ Endpoint = /people/v2/forms/<form id>/fields/<field id>
 */
 func GetFormField(client *core.PC_Client, formId string, formFieldId string) (core.FormFieldsRoot, error) {
 	//Fetch the data
-	endpoint := client.Endpoint + "people/v2/forms/" + formId + "/fields/" + formFieldId
+	endpoint := client.Endpoint + "/people/v2/forms/" + formId + "/fields/" + formFieldId
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return core.FormFieldsRoot{}, fmt.Errorf("Error creating get request: %w", err)

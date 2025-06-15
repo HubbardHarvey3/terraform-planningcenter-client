@@ -2,93 +2,42 @@ package people
 
 import (
 	"encoding/json"
-	"os"
-	"strings"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/HubbardHarvey3/terraform-planningcenter-client/core"
 )
 
-var responsePersonPhoneNumber = `{
-	"data": {
-		"type": "person",
-		"attributes": {
-			"accounting_administrator": false,
-			"anniversary": null,
-			"birthdate": "1990-01-01",
-			"first_name": "PhoneNumberTest",
-			"gender": "male",
-			"given_name": null,
-			"grade": null,
-			"graduation_year": null,
-			"inactivated_at": null,
-			"last_name": "DoeAddress",
-			"medical_notes": null,
-			"membership": "member",
-			"middle_name": null,
-			"nickname": null,
-			"site_administrator": false,
-			"status": "active"
-		}
-	}
-}`
-
-var responsePhoneNumber = `{
-	"data": {
-		"type": "Address",
-		"attributes": {
-		    "number": "(123) 888-9999",
-			"carrier": null,
-			"location": "Mobile",
-			"primary": true
-		}
-	}
-}`
-
-var personIdPhoneNumber string
-var phoneNumberId string
-var appIdPhoneNumber = os.Getenv("PC_APP_ID")
-var secretTokenPhoneNumber = os.Getenv("PC_SECRET_TOKEN")
+var phoneNumberPersonId string = "123456789"
 
 func TestCreatePhoneNumber(t *testing.T) {
-	var dataPerson core.PeopleRoot
+	var responsePhoneNumber = `{
+		"data": {
+			"type": "Address",
+			"attributes": {
+				"number": "(123) 888-9999",
+				"carrier": null,
+				"location": "Mobile",
+				"primary": true
+			}
+		}
+	}`
 	var dataPhoneNumber core.PhoneNumberRoot
-
-	if appIdPhoneNumber == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretTokenPhoneNumber == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
+	var mockServer *httptest.Server = setupMockServer(responsePhoneNumber, http.StatusOK)
 
 	//Convert json into core.PeopleRoot
-	err := json.Unmarshal([]byte(responsePersonPhoneNumber), &dataPerson)
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
+
+	err := json.Unmarshal([]byte(responsePhoneNumber), &dataPhoneNumber)
 	if err != nil {
 		t.Error(err)
 	}
 
-	client := core.NewPCClient(appIdPhoneNumber, secretTokenPhoneNumber)
-
-	person, err := CreatePeople(client, &dataPerson)
-	if err != nil {
-		t.Errorf("Error during CreatePeople :: %v\n", err)
-	}
-
-	var responsePerson core.PeopleRoot
-	json.Unmarshal(person, &responsePerson)
-
-	personIdPhoneNumber = responsePerson.Data.ID
-
-	err = json.Unmarshal([]byte(responsePhoneNumber), &dataPhoneNumber)
-	if err != nil {
-		t.Error(err)
-	}
-
-	phoneNumberBytes, err := CreatePhoneNumber(client, personIdPhoneNumber, &dataPhoneNumber)
+	phoneNumberBytes, err := CreatePhoneNumber(client, phoneNumberPersonId, &dataPhoneNumber)
 
 	var phoneNumber core.PhoneNumberRoot
 	json.Unmarshal(phoneNumberBytes, &phoneNumber)
-	phoneNumberId = phoneNumber.Data.ID
 
 	if phoneNumber.Data.Attributes.Location != "Mobile" {
 		t.Errorf("Location is not 'Mobile', but is showing as : %v", phoneNumber.Data.Attributes.Location)
@@ -97,18 +46,24 @@ func TestCreatePhoneNumber(t *testing.T) {
 }
 
 func TestGetPhoneNumber(t *testing.T) {
+	var responsePhoneNumber = `{
+		"data": {
+			"type": "Address",
+			"attributes": {
+				"number": "(123) 888-9999",
+				"carrier": null,
+				"location": "Mobile",
+				"primary": true
+			}
+		}
+	}`
+	var mockServer *httptest.Server = setupMockServer(responsePhoneNumber, http.StatusOK)
 	var phoneNumber core.PhoneNumberRoot
 
-	if appIdPhoneNumber == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretTokenPhoneNumber == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
 	// Initialize your PC_Client with the mock server URL
-	client := core.NewPCClient(appIdPhoneNumber, secretTokenPhoneNumber)
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
 
-	phoneNumber, err := GetPhoneNumber(client, phoneNumberId)
+	phoneNumber, err := GetPhoneNumber(client, phoneNumberPersonId)
 	if err != nil {
 		t.Errorf("GetphoneNumber failed with an error ::: %v\n", err)
 	}
@@ -119,18 +74,24 @@ func TestGetPhoneNumber(t *testing.T) {
 }
 
 func TestUpdatePhoneNumber(t *testing.T) {
+	var responsePhoneNumber = `{
+		"data": {
+			"type": "Address",
+			"attributes": {
+				"number": "(123) 888-9999",
+				"carrier": null,
+				"location": "Home",
+				"primary": true
+			}
+		}
+	}`
 	var phoneNumber core.PhoneNumberRoot
+	var mockServer *httptest.Server = setupMockServer(responsePhoneNumber, http.StatusOK)
 
-	if appIdPhoneNumber == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretTokenPhoneNumber == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
 	// Initialize your PC_Client with the mock server URL
-	client := core.NewPCClient(appIdPhoneNumber, secretTokenPhoneNumber)
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
 
-	phoneNumber, err := GetPhoneNumber(client, phoneNumberId)
+	phoneNumber, err := GetPhoneNumber(client, phoneNumberPersonId)
 	if err != nil {
 		t.Errorf("GetPhoneNumber failed with an error ::: %v\n", err)
 	}
@@ -140,7 +101,7 @@ func TestUpdatePhoneNumber(t *testing.T) {
 	var updatedPhoneNumber core.PhoneNumberRoot
 	updatedPhoneNumber.Data.Attributes = phoneNumber.Data.Attributes
 
-	response, err := UpdatePhoneNumber(client, phoneNumberId, &updatedPhoneNumber)
+	response, err := UpdatePhoneNumber(client, phoneNumberPersonId, &updatedPhoneNumber)
 
 	json.Unmarshal(response, &updatedPhoneNumber)
 
@@ -151,28 +112,14 @@ func TestUpdatePhoneNumber(t *testing.T) {
 }
 
 func TestDeletePhoneNumber(t *testing.T) {
-	if appIdPhoneNumber == "" {
-		t.Errorf("Need Env Vars PC_APP_ID Set")
-	}
-	if secretTokenPhoneNumber == "" {
-		t.Errorf("Need Env Vars PC_SECRET_TOKEN Set")
-	}
 
-	client := core.NewPCClient(appIdPhoneNumber, secretTokenPhoneNumber)
+	var mockServer *httptest.Server = setupMockServer("", http.StatusNoContent)
 
-	err := DeletePhoneNumber(client, phoneNumberId)
-	if err != nil {
-		t.Errorf("Error during DeletePhoneNumber : %v\n", err)
-	}
+	client := core.NewPCClient(mockAppId, mockSecret, mockServer.URL)
 
-	_, err = GetPhoneNumber(client, personIdPhoneNumber)
-	if !strings.Contains(err.Error(), "404") {
-		t.Errorf("GetPhoneNumber should be throwing a 404 after the person was deleted.  Error was %v", err)
-	}
-
-	err = DeletePeople(client, personIdPhoneNumber)
-	if err != nil {
-		t.Errorf("Failed cleaning up testing resource")
+	response := DeletePhoneNumber(client, phoneNumberPersonId)
+	if response != nil {
+		t.Errorf("DeletePhoneNumber response should have been nil, but returned something")
 	}
 
 }
